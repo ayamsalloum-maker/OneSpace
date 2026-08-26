@@ -1,0 +1,1511 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="description" content="OneSpace — shared life, work, and growth workspace for Aya and Mohamad.">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OneSpace</title>
+<style>
+:root{
+ --ink:#21243A; --muted:#737687; --line:rgba(33,36,58,.10); --paper:rgba(255,255,255,.78);
+ --coral:#EC806C; --coral2:#F8DAD2; --lilac:#9687D8; --lilac2:#EAE5F8;
+ --sage:#7F9E7D; --sage2:#E5EFE3; --blue:#6B9CCC; --blue2:#E4F0FA; --navy:#283554;
+ --yellow:#EDC76D; --bg1:#FFF8F3; --bg2:#F7F2FC;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+background:
+ radial-gradient(circle at 9% 8%,rgba(236,128,108,.23),transparent 25%),
+ radial-gradient(circle at 90% 8%,rgba(150,135,216,.22),transparent 27%),
+ radial-gradient(circle at 82% 85%,rgba(107,156,204,.17),transparent 27%),
+ radial-gradient(circle at 14% 86%,rgba(127,158,125,.15),transparent 26%),
+ linear-gradient(160deg,var(--bg1),#fffdfb 40%,var(--bg2));
+background-attachment:fixed}
+button,input,textarea,select{font:inherit} button{cursor:pointer}
+.shell{max-width:1120px;margin:auto;padding:16px 18px 64px}
+.chooser{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:99;padding:20px}
+.choosebox{text-align:center;transform:translateY(-2vh)}
+.micro{font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:900;color:var(--muted)}
+.choosebox .hint{font-family:Georgia,serif;font-size:18px;color:#676879;margin:10px 0 34px}
+.people{display:flex;gap:26px;align-items:center;justify-content:center}
+.people button{border:0;background:none;font-family:Georgia,serif;font-size:66px;line-height:1;letter-spacing:-.055em;color:var(--ink);cursor:pointer;padding:8px 12px;border-radius:18px;transition:transform .18s,background .18s,color .18s,box-shadow .18s}
+.people button:first-child:hover{color:var(--coral);background:rgba(236,128,108,.09);transform:translateY(-3px);box-shadow:0 12px 30px rgba(236,128,108,.10)}.people button:last-child:hover{color:var(--blue);background:rgba(107,156,204,.09);transform:translateY(-3px);box-shadow:0 12px 30px rgba(107,156,204,.10)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--yellow)}
+.workspace{display:none}.workspace.active{display:block}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:9px 0 13px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;background:rgba(255,250,247,.72);backdrop-filter:blur(14px)}
+.back{border:0;background:none;padding:0;color:var(--muted);font-weight:800;cursor:pointer}.who{font-family:Georgia,serif;font-size:22px}
+.tabs{display:flex;gap:19px;overflow:auto;white-space:nowrap;padding:15px 0 5px;position:sticky;top:48px;z-index:18;background:rgba(255,250,247,.64);backdrop-filter:blur(10px)}
+.tabs button{border:0;background:none;padding:0 0 9px;color:var(--muted);font-size:12px;font-weight:820;cursor:pointer}
+.tabs button.active{color:var(--ink);border-bottom:2px solid var(--coral)}
+.page{display:none}.page.active{display:block}
+.hero{padding:50px 0 32px}
+.hero h1{font-family:Georgia,serif;font-size:54px;line-height:.98;letter-spacing:-.055em;font-weight:400;margin:7px 0 12px}
+.hero p{max-width:660px;color:var(--muted);font-size:14px;line-height:1.6;margin:0}
+.section{padding:28px 0}
+.section-head{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:18px}
+h2{font-family:Georgia,serif;font-size:34px;font-weight:400;letter-spacing:-.04em;margin:0}
+.note-head{max-width:460px;color:var(--muted);font-size:12px;line-height:1.55}
+.focus-card{background:rgba(255,255,255,.68);border:1px solid rgba(255,255,255,.72);box-shadow:0 18px 50px rgba(63,48,68,.08);border-radius:24px;padding:22px}
+.focus-label{font-size:9px;letter-spacing:.11em;text-transform:uppercase;font-weight:900;color:var(--coral)}
+.focus-title{font-family:Georgia,serif;font-size:29px;letter-spacing:-.035em;margin:7px 0 5px}
+.focus-why{color:var(--muted);font-size:12px;line-height:1.5}
+.focus-next{margin-top:16px;padding:14px;border-radius:16px;background:linear-gradient(135deg,var(--coral2),var(--lilac2))}
+.focus-next b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.focus-next span{font-size:14px;font-weight:800}
+.btn{border:1px solid var(--line);background:rgba(255,255,255,.78);padding:8px 11px;border-radius:10px;font-size:11px;font-weight:850;cursor:pointer}
+.btn.dark{background:var(--navy);color:white;border-color:var(--navy)}.btn:disabled{opacity:.35}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.goal{background:var(--paper);border:1px solid rgba(255,255,255,.7);border-radius:20px;padding:19px}
+.goal-top{display:flex;justify-content:space-between;gap:14px}.goal-name{font-family:Georgia,serif;font-size:23px}.goal-area{font-size:9px;text-transform:uppercase;letter-spacing:.1em;font-weight:900;color:var(--muted)}
+.goal-why{font-size:11px;color:var(--muted);line-height:1.5;margin:8px 0 13px}
+.path{display:flex;gap:5px;align-items:center;margin:10px 0 13px}.seg{height:6px;border-radius:999px;flex:1;background:rgba(33,36,58,.09)}.seg.done{background:var(--sage)}.seg.current{background:var(--yellow)}
+.nextbox{background:rgba(255,255,255,.56);border-radius:14px;padding:11px}.nextbox .small{font-size:9px;text-transform:uppercase;letter-spacing:.09em;font-weight:900;color:var(--muted)}.nextbox .nexttext{font-weight:820;font-size:13px;margin-top:3px}
+.editgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}
+label.field{font-size:10px;color:var(--muted);font-weight:800}.field input,.field textarea,.notearea,.moneyinput{width:100%;border:1px solid var(--line);background:rgba(255,255,255,.7);border-radius:11px;padding:10px;color:var(--ink);margin-top:5px}.field textarea{min-height:78px;resize:vertical}
+.today-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+.tasklist{border-top:1px solid var(--line)}
+.task{display:grid;grid-template-columns:22px 1fr auto;gap:12px;align-items:start;padding:14px 0;border-bottom:1px solid var(--line)}
+.task input{width:16px;height:16px;margin-top:3px}.task .tarea{font-size:9px;text-transform:uppercase;letter-spacing:.09em;font-weight:900;color:var(--lilac);margin-bottom:3px}.task .tt{font-size:14px;font-weight:800;line-height:1.4}.pill{font-size:9px;padding:5px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.sidebarbox{background:var(--paper);border-radius:20px;padding:18px}.big{font-family:Georgia,serif;font-size:42px;letter-spacing:-.05em}.muted{font-size:11px;color:var(--muted);line-height:1.5}.bar{height:7px;background:rgba(33,36,58,.08);border-radius:99px;overflow:hidden;margin:11px 0}.barfill{height:100%;background:linear-gradient(90deg,var(--coral),var(--lilac));width:0}
+.life-band{border-radius:20px;padding:20px;min-height:170px}.life-band.sage{background:var(--sage2)}.life-band.lilac{background:var(--lilac2)}.life-band h3{font-family:Georgia,serif;font-size:24px;font-weight:400;margin:0 0 7px}.routine{padding:9px 0;border-top:1px solid rgba(33,36,58,.08);display:flex;justify-content:space-between;gap:10px;font-size:12px}.freq{font-size:10px;color:var(--muted)}
+.idea-card{background:var(--paper);border-radius:16px;padding:15px;border:1px solid rgba(255,255,255,.7);margin-bottom:9px}.idea-card b{font-size:13px}.idea-card p{font-size:11px;color:var(--muted);margin:5px 0 0;line-height:1.5}
+.notearea{min-height:150px;resize:vertical}
+.ledger-form{display:grid;grid-template-columns:1.2fr .8fr .8fr auto;gap:8px}.ledger{margin-top:14px;border-top:1px solid var(--line)}.ledger-row{display:grid;grid-template-columns:1.2fr .8fr .8fr auto;gap:8px;padding:10px 0;border-bottom:1px solid var(--line);font-size:12px;align-items:center}.money-pos{color:var(--sage);font-weight:850}.money-neg{color:var(--coral);font-weight:850}
+.lead{background:var(--paper);border:1px solid rgba(255,255,255,.7);border-radius:14px;padding:13px;margin-bottom:9px}.leadhead{display:flex;justify-content:space-between;gap:12px}.leadname{font-weight:850;font-size:13px}.leadmeta{font-size:11px;color:var(--muted);margin-top:3px}.sent{font-size:10px;color:var(--sage)}.unsent{font-size:10px;color:var(--muted)}
+.contactline{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:9px}
+.contactchip{font-size:10px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,.62);border:1px solid var(--line)}
+.stagebar{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.stagebtn{border:1px solid var(--line);background:rgba(255,255,255,.55);border-radius:999px;padding:6px 8px;font-size:10px;font-weight:800;cursor:pointer}
+.stagebtn.on{background:var(--sage2);color:#526d50;border-color:rgba(127,158,125,.28)}
+.msgbox{margin-top:10px;padding:11px;border-radius:12px;background:rgba(150,135,216,.09);font-size:11px;line-height:1.5}
+.igfield{display:flex;gap:7px;margin-top:9px}.igfield input{flex:1;border:1px solid var(--line);background:rgba(255,255,255,.7);border-radius:9px;padding:8px;font-size:11px}
+
+.planflow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.flow{background:var(--paper);border-radius:18px;padding:18px}.flow b{font-family:Georgia,serif;font-size:22px;font-weight:400;display:block;margin-bottom:5px}.flow span{font-size:11px;color:var(--muted);line-height:1.45}
+@media(max-width:760px){
+ .shell{padding:13px}.people{gap:14px}.people button{font-size:48px}.hero{padding:38px 0 24px}.hero h1{font-size:43px}
+ .grid2,.today-grid,.planflow{grid-template-columns:1fr}.section-head{display:block}.note-head{margin-top:7px}.editgrid{grid-template-columns:1fr}.ledger-form,.ledger-row{grid-template-columns:1fr 1fr}.tabs{gap:15px}.focus-title{font-size:26px}
+}
+
+.roadmap-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.roadmap-card{background:var(--paper);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:19px;box-shadow:0 12px 34px rgba(57,47,72,.05)}
+.roadmap-card h3{font-family:Georgia,serif;font-size:24px;font-weight:400;margin:3px 0 5px}
+.roadmap-card .why{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:13px}
+.milestone-list{display:flex;flex-direction:column;gap:7px}
+.milestone-row{display:grid;grid-template-columns:26px 1fr auto;gap:9px;align-items:start;padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.46);border:1px solid transparent}
+.milestone-row.done{opacity:.55}
+.milestone-row.current{background:var(--yellow-soft, #F8EBCB);border-color:rgba(237,199,109,.35)}
+.milestone-row.next{background:var(--lilac2);border-color:rgba(150,135,216,.22)}
+.stepnum{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:900;background:rgba(33,36,58,.07)}
+.milestone-row.done .stepnum{background:var(--sage);color:white}
+.steptext{font-size:12px;font-weight:760;line-height:1.35}
+.steplabel{font-size:8px;text-transform:uppercase;letter-spacing:.08em;font-weight:900;color:var(--muted);padding-top:3px}
+.month-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.month-item{padding:15px;border-radius:16px;background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.75)}
+.month-item span{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:900;margin-bottom:5px}
+.month-item b{font-size:12px;line-height:1.4}
+.full-roadmap{margin-top:14px;border-top:1px solid var(--line)}
+.full-step{display:grid;grid-template-columns:28px 1fr auto;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);align-items:start}
+.full-step .n{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:900;background:rgba(33,36,58,.07)}
+.full-step.done{opacity:.5}.full-step.done .n{background:var(--sage);color:white}
+.full-step.current .n{background:var(--yellow)}
+.full-step.next .n{background:var(--lilac);color:white}
+.full-step .txt{font-size:12px;font-weight:780;line-height:1.4}
+.full-step .lab{font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:900;padding-top:4px}
+@media(max-width:760px){.roadmap-grid{grid-template-columns:1fr}.month-strip{grid-template-columns:1fr 1fr}}
+
+
+.life-overview-list{display:flex;flex-direction:column;gap:10px}
+.life-row{background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.78);border-radius:18px;overflow:hidden}
+.life-row summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:18px;align-items:center;padding:17px 18px}
+.life-row summary::-webkit-details-marker{display:none}
+.life-row summary b{display:block;font-family:Georgia,serif;font-size:20px;font-weight:400;line-height:1.25;margin-top:3px}
+.life-kicker{font-size:9px;text-transform:uppercase;letter-spacing:.1em;font-weight:900;color:var(--muted)}
+.life-status{font-size:10px;color:var(--muted);white-space:nowrap}
+.life-open{padding:0 18px 18px;border-top:1px solid var(--line)}
+.mini-path{display:flex;gap:7px;flex-wrap:wrap;padding:14px 0}
+.mini-path span{font-size:9px;padding:6px 8px;border-radius:999px;background:rgba(33,36,58,.06);color:var(--muted)}
+.mini-path span.on{background:var(--lilac2);color:var(--ink);font-weight:900}
+.subhead{font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:900;color:var(--muted);margin:5px 0 9px}
+.routine-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.routine-grid>div,.project-block{background:rgba(255,255,255,.48);border-radius:14px;padding:12px}
+.project-block{margin-bottom:10px}
+.project-title{font-family:Georgia,serif;font-size:19px;margin-bottom:3px}
+.routine-task{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:12px}
+.taskpool{margin-top:9px}
+.pool-row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:12px}
+@media(max-width:760px){.routine-grid{grid-template-columns:1fr}.life-row summary{align-items:flex-start}.life-status{white-space:normal;text-align:right}}
+
+
+.life-board{display:grid;grid-template-columns:1.05fr .95fr;grid-auto-rows:minmax(190px,auto);gap:14px}
+.life-card{border:0;text-align:left;padding:20px;border-radius:22px;color:var(--ink);cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.life-card:hover{transform:translateY(-3px);box-shadow:0 18px 45px rgba(48,42,65,.10)}
+.life-card.wide{grid-column:1/-1}
+.card-page{background:linear-gradient(145deg,#f9d9d1,#f4e8e3)}
+.card-money{background:linear-gradient(145deg,#e9e4f8,#f7f4fc)}
+.card-work{background:linear-gradient(145deg,#dfeafa,#eef4fa)}
+.card-routine{background:linear-gradient(145deg,#e2eee0,#f1f6ef)}
+.card-learn{background:linear-gradient(145deg,#fbefcf,#faf7ef)}
+.card-top{display:flex;justify-content:space-between;align-items:center}.card-label{font-size:9px;letter-spacing:.12em;font-weight:900;color:var(--muted)}.card-arrow{font-size:18px}
+.card-title{font-family:Georgia,serif;font-size:26px;line-height:1.05;margin:23px 0 8px;max-width:360px}.card-sub{font-size:11px;color:var(--muted);line-height:1.45}
+.circle-row{display:flex;gap:9px;margin-top:23px}.circle{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:900;background:rgba(255,255,255,.62);border:1px solid rgba(33,36,58,.08)}.circle.done{background:var(--sage);color:white}.circle.current{background:var(--coral);color:white}
+.big-number{font-family:Georgia,serif;font-size:60px;line-height:.8;margin-top:22px;color:var(--lilac)}
+.mini-line{height:6px;background:rgba(33,36,58,.08);border-radius:999px;margin:15px 0 10px;overflow:hidden}.mini-line span{display:block;height:100%;background:var(--lilac);border-radius:999px}
+.work-layout{display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center}.ring{width:105px;height:105px;border-radius:50%;border:10px solid rgba(107,156,204,.20);border-top-color:var(--blue);display:grid;place-items:center}.ring div{text-align:center}.ring b{display:block;font-size:10px}.ring span{font-size:9px;color:var(--muted)}
+.routine-dots{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}.routine-dots span{font-size:10px;background:rgba(255,255,255,.6);padding:7px 9px;border-radius:999px}
+.skill-track{display:flex;align-items:center;margin-top:26px}.skill-dot{width:14px;height:14px;border-radius:50%;background:rgba(33,36,58,.12)}.skill-dot.active{background:var(--yellow)}.skill-line{height:2px;flex:1;background:rgba(33,36,58,.10)}
+.life-details{margin-top:18px}.details-placeholder{padding:25px;border:1px dashed rgba(33,36,58,.16);border-radius:18px;text-align:center;color:var(--muted)}.details-placeholder span{font-size:10px;text-transform:uppercase;letter-spacing:.1em;display:block}.details-placeholder b{display:block;font-family:Georgia,serif;font-size:20px;font-weight:400;margin-top:5px}
+.detail-panel{display:none;background:rgba(255,255,255,.72);border-radius:22px;padding:20px;border:1px solid rgba(255,255,255,.78)}.detail-panel.active{display:block}
+.detail-head{display:flex;justify-content:space-between;gap:15px;align-items:start;margin-bottom:10px}.detail-head h3{font-family:Georgia,serif;font-size:27px;font-weight:400;margin:4px 0}.date-pill{font-size:9px;padding:6px 8px;border-radius:999px;background:var(--blue2);white-space:nowrap}
+.milestone-visual{display:flex;align-items:center;gap:8px;padding:12px 0 18px;overflow:auto}.milestone-visual span{font-size:9px;padding:6px 8px;border-radius:999px;background:rgba(33,36,58,.06);white-space:nowrap}.milestone-visual span.m-done{background:var(--sage2)}.milestone-visual span.m-now{background:var(--coral2);font-weight:900}.milestone-visual i{width:20px;height:1px;background:var(--line);flex:0 0 20px}
+.clean-task{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line);font-size:12px}.clean-task .btn{white-space:nowrap}
+.routine-columns{display:grid;grid-template-columns:1fr 1fr;gap:18px}.routine-columns>div>b{font-family:Georgia,serif;font-size:19px;font-weight:400}
+@media(max-width:760px){.life-board{grid-template-columns:1fr}.life-card.wide{grid-column:auto}.work-layout{grid-template-columns:1fr auto}.routine-columns{grid-template-columns:1fr}.card-title{font-size:23px}}
+
+
+/* Final usability pass */
+.week-focus-strip{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-bottom:16px}
+.week-focus-box,.attention-box{background:rgba(255,255,255,.68);border:1px solid rgba(255,255,255,.8);border-radius:18px;padding:16px}
+.week-focus-box h3,.attention-box h3{font-family:Georgia,serif;font-size:21px;font-weight:400;margin:3px 0 9px}
+.focus-list{display:flex;gap:7px;flex-wrap:wrap}.focus-chip{font-size:10px;padding:7px 9px;border-radius:999px;background:var(--lilac2);border:1px solid rgba(150,135,216,.18)}
+.focus-empty{font-size:11px;color:var(--muted)}
+.attention-line{font-size:11px;padding:7px 0;border-top:1px solid var(--line)}
+.progress-toggle{display:flex;gap:6px}.progress-toggle button.active{background:var(--navy);color:#fff}
+.progress-summary{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;margin-top:14px}
+.progress-circle{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--coral) var(--pct,0%), rgba(33,36,58,.08) 0);position:relative}
+.progress-circle:after{content:"";width:70px;height:70px;background:#fffaf7;border-radius:50%;position:absolute}
+.progress-circle b,.progress-circle span{position:relative;z-index:1}.progress-circle b{font-family:Georgia,serif;font-size:22px}.progress-circle span{font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.area-progress-row{display:grid;grid-template-columns:95px 1fr auto;gap:8px;align-items:center;margin:7px 0;font-size:10px}
+.area-progress-row .bar{margin:0}
+.quick-add{position:fixed;right:18px;bottom:18px;z-index:60}
+.quick-add>button{width:48px;height:48px;border-radius:50%;border:0;background:var(--navy);color:white;font-size:24px;box-shadow:0 12px 30px rgba(40,53,84,.22);cursor:pointer}
+.quick-panel{display:none;position:absolute;right:0;bottom:58px;width:min(350px,88vw);background:#fffaf7;border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 20px 55px rgba(45,40,60,.18)}
+.quick-panel.open{display:block}.quick-panel .row{display:grid;grid-template-columns:1fr .75fr;gap:7px}.quick-panel input,.quick-panel select{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px;background:white}
+.move-tools{display:flex;gap:5px;align-items:center;flex-wrap:wrap}.move-tools button{font-size:9px;padding:6px 7px}
+.move-text[contenteditable="true"]{outline:1px dashed var(--lilac);border-radius:5px;padding:2px 4px}
+.later-block,.history-block{margin-top:16px}.later-block h3,.history-block h3{font-family:Georgia,serif;font-size:22px;font-weight:400;margin:0 0 8px}
+.history-item{font-size:11px;padding:9px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px}
+.routine-counter{display:inline-flex;align-items:center;gap:5px;font-size:9px;color:var(--muted);margin-left:7px}
+.routine-counter button{width:22px;height:22px;border-radius:50%;border:1px solid var(--line);background:white;cursor:pointer}
+.suggested-title{font-size:9px;text-transform:uppercase;letter-spacing:.1em;font-weight:900;color:var(--muted);margin:12px 0 2px}
+@media(max-width:760px){.week-focus-strip{grid-template-columns:1fr}.progress-summary{grid-template-columns:1fr}.progress-circle{margin:auto}}
+
+
+/* ===== UI/UX polish pass ===== */
+:root{
+ --status-muted:#A6A9B4;
+ --status-blue:#6B9CCC;
+ --status-green:#7F9E7D;
+ --status-warm:#D79A59;
+ --status-coral:#EC806C;
+}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.secondary{background:rgba(255,255,255,.72);color:var(--ink)}
+.btn.ghost{background:transparent}
+.btn:active{transform:translateY(1px)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(15px);opacity:0;pointer-events:none;background:var(--navy);color:#fff;padding:9px 12px;border-radius:999px;font-size:11px;font-weight:800;z-index:120;transition:.2s;box-shadow:0 12px 30px rgba(40,53,84,.22)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.undo-link{background:none;border:0;color:#fff;text-decoration:underline;font-weight:800;cursor:pointer;margin-left:8px;padding:0}
+.status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px}
+.status-muted{background:var(--status-muted)}.status-blue{background:var(--status-blue)}.status-green{background:var(--status-green)}.status-warm{background:var(--status-warm)}.status-coral{background:var(--status-coral)}
+
+.leads-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.leads-toolbar input,.leads-toolbar select{border:1px solid var(--line);background:rgba(255,255,255,.78);border-radius:10px;padding:9px 10px;font-size:11px}
+.leads-toolbar input{min-width:210px;flex:1}
+.compact-lead{background:rgba(255,255,255,.70);border:1px solid rgba(255,255,255,.82);border-radius:16px;margin-bottom:8px;overflow:hidden;transition:.18s}
+.compact-lead:hover{box-shadow:0 10px 28px rgba(43,39,58,.07)}
+.compact-lead summary{list-style:none;cursor:pointer;padding:13px 14px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.compact-lead summary::-webkit-details-marker{display:none}
+.lead-main{min-width:0}.lead-name-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lead-name-row b{font-size:13px}.lead-type{font-size:9px;padding:4px 6px;border-radius:999px;background:rgba(33,36,58,.06);color:var(--muted);font-weight:800}
+.lead-priority{font-size:9px;padding:4px 6px;border-radius:999px;font-weight:900}.lead-priority.A{background:var(--sage2);color:#536c51}.lead-priority.B{background:var(--blue2);color:#4e7398}.lead-priority.C{background:var(--coral2);color:#8b5a50}
+.lead-sub{font-size:10px;color:var(--muted);margin-top:4px}
+.lead-status{font-size:10px;font-weight:850;white-space:nowrap}
+.lead-actions-primary{display:flex;gap:7px;flex-wrap:wrap;padding:0 14px 12px}
+.lead-actions-primary .btn{min-height:38px}
+.lead-details{border-top:1px solid var(--line);padding:13px 14px 14px;background:rgba(255,255,255,.42)}
+.lead-details-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lead-details-grid>div{background:rgba(255,255,255,.55);border-radius:11px;padding:10px}
+.lead-details-grid b{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.lead-details-grid p{font-size:11px;line-height:1.45;margin:4px 0 0}
+.lead-stage-strip{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+.lead-stage-strip button{border:1px solid var(--line);background:rgba(255,255,255,.7);border-radius:999px;padding:7px 8px;font-size:9px;font-weight:850;cursor:pointer}
+.lead-stage-strip button.on{background:var(--sage2);border-color:rgba(127,158,125,.28)}
+.lead-message-row{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.lead-message-row select{border:1px solid var(--line);border-radius:9px;padding:8px;background:white;font-size:10px}
+.lead-contact-line{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.lead-contact-line span{font-size:9px;border:1px solid var(--line);padding:5px 7px;border-radius:999px;background:rgba(255,255,255,.65)}
+.sticky-lead-title{position:sticky;top:99px;z-index:10;background:rgba(255,250,247,.86);backdrop-filter:blur(10px);padding:9px 0 7px}
+@media(max-width:760px){
+ .lead-details-grid{grid-template-columns:1fr}
+ .compact-lead summary{grid-template-columns:1fr}
+ .lead-status{justify-self:start}
+ .lead-actions-primary .btn{flex:1;min-width:92px;min-height:42px;font-size:11px}
+ .leads-toolbar{display:grid;grid-template-columns:1fr 1fr}.leads-toolbar input{grid-column:1/-1;min-width:0}
+ .sticky-lead-title{top:96px}
+}
+
+
+.inline-editor{display:none;margin-top:9px}.inline-editor.open{display:block}
+.inline-add-row{display:grid;grid-template-columns:1fr auto;gap:7px}
+.inline-add-row input{border:1px solid var(--line);background:rgba(255,255,255,.78);border-radius:10px;padding:9px;font-size:11px}
+.focus-chip.editable{display:inline-flex;align-items:center;gap:6px}
+.chip-x{border:0;background:transparent;color:var(--muted);font-size:12px;cursor:pointer;padding:0}
+.attention-user{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:11px}
+.attention-user button{border:0;background:transparent;color:var(--muted);cursor:pointer}
+
+.lead-simple{background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.82);border-radius:14px;margin-bottom:8px;overflow:hidden}
+.lead-simple-main{padding:13px 14px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.lead-simple-name{font-size:13px;font-weight:850}.lead-simple-area{font-size:10px;color:var(--muted);margin-top:3px}
+.lead-simple-status{font-size:10px;font-weight:850;white-space:nowrap}
+.lead-simple-actions{display:flex;gap:7px;flex-wrap:wrap;padding:0 14px 12px}
+.lead-simple-actions .btn{min-height:38px}
+.lead-more-toggle{border:0;background:none;color:var(--muted);font-size:10px;font-weight:850;cursor:pointer;padding:0 14px 11px}
+.lead-more{display:none;border-top:1px solid var(--line);padding:12px 14px;background:rgba(255,255,255,.42)}
+.lead-more.open{display:block}
+.lead-meta-line{font-size:10px;color:var(--muted);margin-bottom:8px}
+.lead-detail-copy{font-size:11px;line-height:1.45;margin:8px 0}
+@media(max-width:760px){
+ .lead-simple-main{grid-template-columns:1fr}
+ .lead-simple-status{justify-self:start}
+ .lead-simple-actions{display:grid;grid-template-columns:1fr 1fr}
+ .lead-simple-actions .btn{width:100%;min-height:44px}
+ .inline-add-row{grid-template-columns:1fr}
+}
+
+
+/* Final touch: make utility areas feel lighter */
+#leadBatchNote{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.48);box-shadow:none}
+#leadBatchNote p{margin:3px 0 0}
+.week-focus-box,.attention-box{box-shadow:none}
+.lead-simple-actions .btn.primary:first-child{font-weight:900}
+.life-card:focus-visible,.btn:focus-visible,.lead-more-toggle:focus-visible{
+  outline:3px solid rgba(107,156,204,.28);outline-offset:2px
+}
+@media(max-width:760px){
+  .section{padding:22px 0}
+  .hero{padding-bottom:20px}
+  .life-card{min-height:170px}
+  .lead-simple{border-radius:16px}
+}
+
+
+/* Readability pass */
+.clean-task{font-size:14px;line-height:1.5;padding:14px 0}
+.clean-task .btn{font-size:10px;min-height:36px}
+.task .tt{font-size:15px;line-height:1.5}
+.task .tarea{font-size:10px}
+.pool-row{font-size:14px;line-height:1.45;padding:11px 0}
+.routine-task{font-size:13px;line-height:1.45}
+.lead-simple-name{font-size:14px}
+.lead-simple-area{font-size:11px}
+.lead-simple-status{font-size:11px}
+.lead-simple-actions .btn{font-size:11px}
+.lead-detail-copy{font-size:12px;line-height:1.5}
+.ig-status{font-size:9px;padding:5px 7px;border-radius:999px;font-weight:850}
+.ig-verified{background:var(--sage2);color:#526d50}
+.ig-unverified{background:var(--yellow-soft,#F8EBCB);color:#7a672c}
+.ig-missing{background:rgba(33,36,58,.06);color:var(--muted)}
+@media(max-width:760px){
+ .clean-task{font-size:15px}
+ .task .tt{font-size:16px}
+ .lead-simple-name{font-size:15px}
+}
+
+
+.reply-ready{
+  margin-top:10px;padding:12px;border-radius:12px;
+  background:rgba(107,156,204,.10);
+  border:1px solid rgba(107,156,204,.18)
+}
+.reply-ready .label{
+  font-size:9px;font-weight:900;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px
+}
+.reply-ready .copy{font-size:12px;line-height:1.5;margin-bottom:9px}
+.reply-ready .actions{display:flex;gap:7px;flex-wrap:wrap}
+@media(max-width:760px){
+  .reply-ready .copy{font-size:13px}
+  .reply-ready .actions .btn{flex:1;min-height:42px}
+}
+
+
+.shared-pill{
+ position:fixed;right:18px;bottom:18px;z-index:115;
+ border:1px solid var(--line);background:rgba(255,255,255,.92);
+ backdrop-filter:blur(12px);border-radius:999px;padding:9px 12px;
+ font-size:10px;font-weight:900;box-shadow:0 10px 28px rgba(43,39,58,.10);
+ cursor:pointer
+}
+.shared-pill.online{background:var(--sage2);color:#526d50}
+.shared-modal{
+ position:fixed;inset:0;background:rgba(32,34,48,.26);z-index:130;
+ display:none;align-items:center;justify-content:center;padding:20px
+}
+.shared-modal.open{display:flex}
+.shared-card{
+ width:min(420px,100%);background:#fffaf7;border-radius:20px;padding:20px;
+ box-shadow:0 24px 80px rgba(32,34,48,.22);border:1px solid rgba(255,255,255,.9)
+}
+.shared-card h3{margin:0 0 6px;font-size:20px}
+.shared-card p{font-size:11px;line-height:1.5;color:var(--muted);margin:0 0 14px}
+.shared-card input{
+ width:100%;box-sizing:border-box;border:1px solid var(--line);
+ border-radius:10px;padding:11px;margin-bottom:8px;font-size:13px;background:#fff
+}
+.shared-card .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.shared-msg{font-size:10px;line-height:1.4;margin-top:10px;color:var(--muted)}
+.shared-userline{font-size:10px;color:var(--muted);margin:8px 0 12px}
+@media(max-width:760px){.shared-pill{right:12px;bottom:12px}.shared-card .actions{grid-template-columns:1fr}}
+
+
+/* Private login gate */
+body.auth-locked{overflow:hidden}
+body.auth-locked > .shell,
+body.auth-locked > #sharedPill,
+body.auth-locked > #sharedModal,
+body.auth-locked > #toast{visibility:hidden;pointer-events:none}
+.auth-gate{
+ position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+ padding:22px;background:
+ radial-gradient(circle at 10% 10%,rgba(236,128,108,.20),transparent 28%),
+ radial-gradient(circle at 90% 12%,rgba(150,135,216,.20),transparent 30%),
+ linear-gradient(145deg,#fff8f3,#f7f2fc);
+}
+body:not(.auth-locked) .auth-gate{display:none}
+.auth-gate-card{
+ width:min(390px,100%);padding:26px;border-radius:24px;background:rgba(255,255,255,.90);
+ border:1px solid rgba(255,255,255,.94);box-shadow:0 28px 80px rgba(33,36,58,.15)
+}
+.auth-brand{font-size:11px;font-weight:950;letter-spacing:.14em;text-transform:uppercase;color:var(--lilac);margin-bottom:14px}
+.auth-gate-card h1{margin:0 0 7px;font-size:28px;letter-spacing:-.04em}
+.auth-gate-card p{margin:0 0 17px;color:var(--muted);font-size:12px;line-height:1.55}
+.auth-gate-card input{
+ width:100%;padding:12px 13px;margin-bottom:9px;border-radius:12px;border:1px solid var(--line);
+ background:#fff;font-size:14px;color:var(--ink);outline:none
+}
+.auth-gate-card input:focus{border-color:rgba(107,156,204,.6);box-shadow:0 0 0 3px rgba(107,156,204,.10)}
+.gate-main{width:100%;min-height:44px;margin-top:3px}
+.gate-create{
+ display:block;width:100%;border:0;background:transparent;color:var(--muted);
+ font-size:10px;font-weight:800;margin-top:12px;cursor:pointer
+}
+.gate-msg{font-size:10px;line-height:1.45;color:var(--muted);margin-top:10px;min-height:14px}
+
+</style>
+</head>
+<body class="auth-locked">
+<div id="authGate" class="auth-gate">
+  <div class="auth-gate-card">
+    <div class="auth-brand">OneSpace</div>
+    <h1>Private workspace</h1>
+    <p>Sign in to open Aya & Mohamad’s shared workspace.</p>
+    <input id="gateEmail" type="email" autocomplete="email" placeholder="Email">
+    <input id="gatePassword" type="password" autocomplete="current-password" placeholder="Password">
+    <button class="btn primary gate-main" onclick="gateSignIn()">Sign in</button>
+    <button class="gate-create" onclick="gateSignUp()">First time? Create shared login</button>
+    <div id="gateMsg" class="gate-msg"></div>
+  </div>
+</div>
+<div class="shell">
+<section id="chooser" class="chooser"><div class="choosebox"><div class="micro">OneSpace</div><div class="hint">Choose your space</div><div class="people"><button onclick="enter('aya')">Aya</button><span class="dot"></span><button onclick="enter('mohamad')">Mohamad</button></div></div></section>
+
+<section id="aya" class="workspace">
+ <div class="topbar"><button class="back" onclick="home()">← home</button><div class="who">Aya</div></div>
+ <nav class="tabs" id="atabs">
+   <button class="active" data-page="aOverview">Overview</button>
+   <button data-page="aToday">Today</button>
+   <button data-page="aCreate">Create</button>
+   <button data-page="aNotes">Notes</button>
+ </nav>
+
+ <div class="hero"><div class="micro">Aya · life in one place</div><h1>See your life clearly. Choose the day.</h1><p>Overview shows your life areas and what you’re building. Tasks stay inside each area until you choose <b>Add to Today</b>.</p></div>
+
+ 
+
+<div id="aOverview" class="page active">
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="micro">AUG 26 → AUG 31</div>
+        <h2 style="margin-top:5px">Aya</h2>
+      </div>
+      <div class="note-head">Open one area when you want the details. The page stays calm; the work appears only when you ask for it.</div>
+    </div>
+
+    
+
+<div class="week-focus-strip">
+  <div class="week-focus-box">
+    <div class="micro">THIS WEEK</div>
+    <h3>This week</h3>
+    <div id="weekFocusChips" class="focus-list"></div>
+    <div id="weekFocusEditor" class="inline-editor">
+      <div class="inline-add-row">
+        <input id="weekFocusInput" placeholder="Add a focus for this week">
+        <button class="btn primary" onclick="addWeekFocusInline()">Add</button>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn secondary" onclick="toggleWeekFocusEditor()">Edit focus</button>
+      <button class="btn secondary" onclick="showProgressBox()">View progress</button>
+    </div>
+  </div>
+
+  <div class="attention-box">
+    <div class="micro">NEEDS ATTENTION</div>
+    <h3>Needs attention</h3>
+    <div id="needsAttention"></div>
+    <div id="attentionEditor" class="inline-editor">
+      <div class="inline-add-row">
+        <input id="attentionInput" placeholder="Add something that needs attention">
+        <button class="btn primary" onclick="addAttentionInline()">Add</button>
+      </div>
+    </div>
+    <div class="actions"><button class="btn secondary" onclick="toggleAttentionEditor()">Add / edit</button></div>
+  </div>
+</div>
+
+<div id="progressBox" class="focus-card" style="display:none;margin-bottom:16px">
+  <div class="section-head" style="margin-bottom:4px">
+    <div><div class="micro">PROGRESS</div><h2 style="font-size:27px">What actually moved</h2></div>
+    <div class="progress-toggle"><button class="btn active" data-period="week">This week</button><button class="btn" data-period="month">This month</button></div>
+  </div>
+  <div id="progressContent"></div>
+</div>
+
+<div class="life-board">
+      <button class="life-card card-page" onclick="openLifeCard('pagePanel')">
+        <div class="card-top"><span class="card-label">MY PAGE</span><span class="card-arrow">↗</span></div>
+        <div class="card-title">Shape Aya’s page.</div>
+        <div class="card-sub">Identity → content → consistency → income</div>
+        <div class="circle-row">
+          <span class="circle done">1</span><span class="circle current">2</span><span class="circle">3</span><span class="circle">4</span>
+        </div>
+      </button>
+
+      <button class="life-card card-money" onclick="openLifeCard('moneyPanel')">
+        <div class="card-top"><span class="card-label">MONEY / APP</span><span class="card-arrow">↗</span></div>
+        <div class="big-number">$</div>
+        <div class="card-title">Build an income path.</div>
+        <div class="mini-line"><span style="width:28%"></span></div>
+        <div class="card-sub">Problem → validate → build → income</div>
+      </button>
+
+      <button class="life-card card-work wide" onclick="openLifeCard('workPanel')">
+        <div class="card-top"><span class="card-label">WORK</span><span class="card-arrow">↗</span></div>
+        <div class="work-layout">
+          <div>
+            <div class="card-title">Keep work ready without inventing work.</div>
+            <div class="card-sub">No active project right now · stay prepared for the next one</div>
+          </div>
+          <div class="ring"><div><b>NOW</b><span>ready</span></div></div>
+        </div>
+      </button>
+
+      <button class="life-card card-routine" onclick="openLifeCard('routinePanel')">
+        <div class="card-top"><span class="card-label">ROUTINE / LIFE</span><span class="card-arrow">↗</span></div>
+        <div class="card-title">Make daily life feel lighter.</div>
+        <div class="routine-dots">
+          <span>home</span><span>food</span><span>body</span><span>peace</span>
+        </div>
+      </button>
+
+      <button class="life-card card-learn" onclick="openLifeCard('learnPanel')">
+        <div class="card-top"><span class="card-label">LEARNING</span><span class="card-arrow">↗</span></div>
+        <div class="card-title">Grow stronger in Interior.</div>
+        <div class="skill-track">
+          <div class="skill-dot active"></div><div class="skill-line"></div><div class="skill-dot"></div><div class="skill-line"></div><div class="skill-dot"></div>
+        </div>
+        <div class="card-sub">Interior skill → practice → apply</div>
+      </button>
+    </div>
+
+    <div id="lifeDetails" class="life-details">
+      <div class="details-placeholder">
+        <span>Choose a card above</span>
+        <b>Your tasks will open here.</b>
+      </div>
+
+      <div id="pagePanel" class="detail-panel">
+        <div class="detail-head"><div><span class="card-label">MY PAGE</span><h3>Aya’s page → identity → first content → income potential</h3></div><span class="date-pill">Aug 26–31</span></div>
+        <div class="milestone-visual"><span class="m-done">Direction</span><i></i><span class="m-now">Visual identity</span><i></i><span>Content</span><i></i><span>Publish</span></div><div class="suggested-title">Suggested moves — edit, choose, or ignore</div><div class="clean-task" data-source="My Page" data-text="Define what belongs on Aya’s page"><span>Define what belongs on Aya’s page</span><button class="btn">Add to Today</button></div>
+        <div class="clean-task" data-source="My Page" data-text="Build the first warm + joyful color palette"><span>Build the first warm + joyful color palette</span><button class="btn">Add to Today</button></div>
+        <div class="clean-task" data-source="My Page" data-text="Make a moodboard from the tested colors"><span>Make a moodboard from the tested colors</span><button class="btn">Add to Today</button></div>
+        <div class="clean-task" data-source="My Page" data-text="Sketch two Aya logo directions"><span>Sketch two Aya logo directions</span><button class="btn">Add to Today</button></div>
+        <div class="clean-task" data-source="My Page" data-text="Choose one logo and refine only that"><span>Choose one logo and refine only that</span><button class="btn">Add to Today</button></div>
+        <div class="clean-task" data-source="My Page" data-text="Post one real creative story"><span>Post one real creative story</span><button class="btn">Add to Today</button></div>
+        <div class="idea-card" style="margin-top:12px"><b>What this page can become</b><p>Content + creativity + candles + design + future income streams. It does not need to fit one box yet.</p></div>
+      </div>
+
+      <div id="moneyPanel" class="detail-panel">
+        <div class="detail-head"><div><span class="card-label">MONEY / APP</span><h3>Find a problem worth building for</h3></div><span class="date-pill">Aug 26–31</span></div>
+        <div class="milestone-visual"><span class="m-now">Problem</span><i></i><span>Validate</span><i></i><span>MVP</span><i></i><span>Build</span></div><div class="suggested-title">Suggested moves — edit, choose, or ignore</div><div class="clean-task" data-source="Money / App" data-text="Write the exact problem in one sentence"><span>Write the exact problem in one sentence</span><button class="btn">Add to Today</button></div>
+        <div class="clean-task" data-source="Money / App" data-text="Choose who has this problem"><span>Choose who has this problem</span><button class="btn">Add to Today</button></div>
+        <div class="clean-task" data-source="Money / App" data-text="Ask 3 possible users about the problem"><span>Ask 3 possible users about the problem</span><button class="btn">Add to Today</button></div>
+        <div class="clean-task" data-source="Money / App" data-text="Write what people repeated or cared about"><span>Write what people repeated or cared about</span><button class="btn">Add to Today</button></div>
+        <div class="clean-task" data-source="Money / App" data-text="Decide: keep, change, or drop the idea"><span>Decide: keep, change, or drop the idea</span><button class="btn">Add to Today</button></div>
+      </div>
+
+      <div id="workPanel" class="detail-panel">
+        <div class="detail-head"><div><span class="card-label">WORK</span><h3>No active project right now</h3></div><span class="date-pill">Current</span></div>
+        <div class="milestone-visual"><span class="m-now">Stay ready</span><i></i><span>New opportunity</span><i></i><span>Project starts</span><i></i><span>Deliver</span></div>
+        <div class="suggested-title">Suggested moves — only if useful</div>
+        <div class="clean-task" data-source="Work" data-text="Keep one simple place ready for future project notes"><span>Keep one simple place ready for future project notes</span><button class="btn">Add to Today</button></div>
+        <div class="clean-task" data-source="Work" data-text="Save one interior reference that genuinely teaches you something"><span>Save one interior reference that genuinely teaches you something</span><button class="btn">Add to Today</button></div>
+        <div class="idea-card" style="margin-top:12px"><b>No fake workload.</b><p>When a real project starts, this card changes into that project’s milestones and tasks.</p></div>
+      </div>
+
+      <div id="routinePanel" class="detail-panel">
+        <div class="detail-head"><div><span class="card-label">ROUTINE / LIFE</span><h3>Build a routine that supports the life you want</h3></div><span class="date-pill">Aug 26–31</span></div>
+        <div class="routine-columns">
+          <div><b>Home</b>
+            <div class="clean-task" data-source="Home" data-text="Choose a simple weekly cleaning/reset rhythm"><span>Choose a weekly cleaning/reset rhythm</span><button class="btn">Add to Today</button></div>
+            <div class="clean-task" data-source="Home" data-text="Choose a groceries + cooking rhythm that feels realistic"><span>Choose groceries + cooking rhythm</span><button class="btn">Add to Today</button></div>
+          </div>
+          <div><b>Health & Peace</b>
+            <div class="clean-task" data-source="Health" data-text="Do one 20-minute movement session"><span>20-minute movement</span><button class="btn">Add to Today</button></div>
+            <div class="clean-task" data-source="Peace" data-text="Meditate for 10 minutes"><span>Meditate 10 minutes</span><button class="btn">Add to Today</button></div>
+            <div class="clean-task" data-source="Peace" data-text="Choose one quiet activity that actually helps you reset"><span>Choose one quiet reset activity</span><button class="btn">Add to Today</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="learnPanel" class="detail-panel">
+        <div class="detail-head"><div><span class="card-label">LEARNING</span><h3>Interior first: learn something you can apply</h3></div><span class="date-pill">Aug 26–31</span></div>
+        <div class="milestone-visual"><span class="m-now">Choose focus</span><i></i><span>Learn</span><i></i><span>Practice</span><i></i><span>Apply</span></div><div class="suggested-title">Suggested moves — edit, choose, or ignore</div><div class="clean-task" data-source="Learning" data-text="Choose one Interior topic to focus on until Aug 31"><span>Choose one Interior topic to focus on</span><button class="btn">Add to Today</button></div>
+        <div class="clean-task" data-source="Learning" data-text="Do one focused 30-minute learning session"><span>30-minute focused learning session</span><button class="btn">Add to Today</button></div>
+        <div class="clean-task" data-source="Learning" data-text="Practice what you learned on one real room/project"><span>Practice it on a real room/project</span><button class="btn">Add to Today</button></div>
+        <div class="clean-task" data-source="Learning" data-text="Save one useful takeaway to Notes"><span>Save one useful takeaway to Notes</span><button class="btn">Add to Today</button></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="aToday" class="page">
+   <section class="section">
+     <div class="section-head"><h2>Today</h2><div class="note-head">Only tasks you chose from Overview or Create appear here.</div></div>
+     <div id="todayChosen" class="tasklist"></div>
+     <div id="todayEmpty" class="idea-card"><b>Nothing chosen yet.</b><p>Go to Overview or Create and press Add to Today on what you actually want to do.</p></div>
+     <div class="later-block"><h3>Later</h3><div id="laterChosen" class="tasklist"></div></div>
+     <div class="history-block"><h3>Done recently</h3><div id="recentHistory"></div></div>
+
+   </section>
+ </div>
+
+<div id="aCreate" class="page">
+   <section class="section"><div class="section-head"><h2>Create</h2><div class="note-head">Content supports your voice and your projects. It doesn’t need its own complicated system.</div></div>
+    <div class="focus-card"><div class="focus-label">This week</div><div class="focus-title">Create one useful piece, not five random posts.</div><div class="focus-why">Choose something connected to what you’re learning, building, or experiencing.</div>
+      <div class="grid2" style="margin-top:15px"><label class="field">Next piece<input id="contentNext" placeholder="e.g. Reel about restarting"></label><label class="field">What do I want to say?<input id="contentWhy" placeholder="The one message"></label></div>
+      <label class="field">Hook / main points / draft<textarea id="contentDraft"></textarea></label>
+      <div class="actions"><button class="btn" onclick="addCreateTask('Write the piece')">Add writing to Today</button><button class="btn" onclick="addCreateTask('Record / create the piece')">Add recording to Today</button><button class="btn" onclick="addCreateTask('Publish the piece')">Add publishing to Today</button></div>
+    </div>
+   </section>
+ </div>
+
+ <div id="aNotes" class="page">
+   <section class="section"><div class="section-head"><h2>Notes</h2><div class="note-head">Free space. Nothing here becomes a task unless you intentionally move it into a goal.</div></div><textarea id="notes" class="notearea" style="min-height:320px" placeholder="Ideas, thoughts, things to remember..."></textarea></section>
+ </div>
+</section>
+
+<section id="mohamad" class="workspace">
+ <div class="topbar"><button class="back" onclick="home()">← home</button><div class="who">Mohamad</div></div>
+ <nav class="tabs" id="mtabs">
+<button class="active" data-page="mOverview">Overview</button>
+<button data-page="mToday">Today</button>
+<button data-page="mLeads">Leads</button>
+<button data-page="mGrowth">Growth</button>
+<button data-page="mProduct">Product Lab</button>
+<button data-page="mMoney">Money</button>
+</nav>
+ <div class="hero"><div class="micro">Interior business</div><h1>See what matters. Then act.</h1><p>Leads, visibility, opportunities and money — simple enough to use every day.</p></div>
+
+ 
+<div id="mOverview" class="page active">
+  <section class="section">
+    <div class="section-head">
+      <div><div class="micro">BUSINESS AT A GLANCE</div><h2 style="margin-top:5px">Mohamad</h2></div>
+      <div class="note-head">Simple overview first. Open a card only when you need the detail.</div>
+    </div>
+
+    <div class="life-board">
+      <button class="life-card card-work" onclick="showPage('mLeads','mtabs')">
+        <div class="card-top"><span class="card-label">LEADS</span><span class="card-arrow">↗</span></div>
+        <div class="card-title">10 contacts today.</div>
+        <div class="card-sub"><span id="mOverviewContacted">0</span> contacted · <span id="mOverviewWarm">0</span> warm</div>
+        <div class="circle-row"><span class="circle current">10</span><span class="circle">→</span><span class="circle">reply</span><span class="circle">warm</span></div>
+      </button>
+
+      <button class="life-card card-page" onclick="showPage('mGrowth','mtabs')">
+        <div class="card-top"><span class="card-label">GROWTH</span><span class="card-arrow">↗</span></div>
+        <div class="card-title">Stay visible.</div>
+        <div class="card-sub">Recent work · WhatsApp catalog · Instagram · partnerships</div>
+        <div class="routine-dots"><span>show</span><span>post</span><span>follow</span><span>engage</span></div>
+      </button>
+
+      <button class="life-card card-money" onclick="showPage('mMoney','mtabs')">
+        <div class="card-top"><span class="card-label">MONEY</span><span class="card-arrow">↗</span></div>
+        <div class="big-number" id="mOverviewMoney">$0</div>
+        <div class="card-title">Toward $5,000/month.</div>
+        <div class="mini-line"><span id="mOverviewMoneyLine" style="width:0%"></span></div>
+        <div class="card-sub">Income · expenses · withdrawals · net</div>
+      </button>
+
+      <button class="life-card card-routine" onclick="showPage('mToday','mtabs')">
+        <div class="card-top"><span class="card-label">OPPORTUNITIES</span><span class="card-arrow">↗</span></div>
+        <div class="card-title">Move warm contacts forward.</div>
+        <div class="card-sub" id="mOverviewOpp">No warm opportunity yet</div>
+        <div class="skill-track"><div class="skill-dot active"></div><div class="skill-line"></div><div class="skill-dot"></div><div class="skill-line"></div><div class="skill-dot"></div></div>
+      </button>
+    </div>
+  </section>
+</div>
+
+<div id="mToday" class="page"><section class="section">
+ <div class="section-head"><h2>Today</h2><div class="note-head">Pulled from the relationship pipeline: outreach, Instagram, replies and visibility.</div></div>
+ <div id="mTodayTasks" class="tasklist"></div>
+</section></div>
+
+ <div id="mLeads" class="page"><section class="section">
+<div class="section-head"><h2>Leads</h2><div class="note-head">60 researched contacts · 10/day from Aug 26–31. Start with A-priority leads. Opening WhatsApp/Instagram never marks contact automatically.</div></div>
+<div class="leads-toolbar">
+<input id="leadSearch" placeholder="Search name, area, type..." oninput="renderLeads()">
+<select id="leadStatusFilter" onchange="renderLeads()">
+<option value="all">All statuses</option>
+<option value="not">Not contacted</option>
+<option value="replied">Replied</option>
+<option value="warm">Warm</option>
+</select>
+<select id="leadChannelFilter" onchange="renderLeads()">
+<option value="all">All channels</option>
+<option value="wa">WhatsApp</option>
+<option value="ig">Instagram</option>
+<option value="phone">Phone</option>
+</select>
+</div>
+<div class="actions" style="margin-bottom:12px">
+<button class="btn primary" onclick="setLeadFilter('today')">Today’s 10</button>
+<button class="btn secondary" onclick="setLeadFilter('A')">A priority</button>
+<button class="btn secondary" onclick="setLeadFilter('all')">All 60</button>
+</div>
+<div id="leadBatchNote" class="idea-card"></div>
+<div id="leadList"></div></section></div>
+
+ <div id="mGrowth" class="page"><section class="section"><div class="section-head"><h2>Growth</h2><div class="note-head">A menu of small visibility actions. Pick one, do it, then move on.</div></div><div id="growthIdeas" class="grid2"></div><label class="field" style="display:block;margin-top:14px">Our own visibility ideas<textarea id="growthNotes"></textarea></label></section></div>
+
+ <div id="mProduct" class="page"><section class="section"><div class="section-head"><h2>Product Lab</h2><div class="note-head">Don’t force a product. Collect real problems, buyers and evidence until one idea becomes worth testing.</div></div><div id="productIdeas"></div><div class="grid2" style="margin-top:14px"><label class="field">Problem we noticed<textarea id="prodProblem"></textarea></label><label class="field">Who has this problem?<textarea id="prodBuyer"></textarea></label></div><label class="field">Ideas worth keeping<textarea id="prodIdeas"></textarea></label></section></div>
+
+ <div id="mMoney" class="page"><section class="section"><div class="section-head"><h2>Money</h2><div class="note-head">A simple ledger so the $5k goal is tied to reality: what came in, what went out, what remains.</div></div>
+   <div class="focus-card"><div class="grid2"><div><div class="micro">Net tracked</div><div id="netMoney" class="big">$0</div></div><div><div class="micro">Toward $5,000</div><div id="moneyPct" class="big">0%</div><div class="bar"><div id="moneyBar" class="barfill"></div></div></div></div></div>
+   <div class="ledger-form" style="margin-top:14px"><input id="moneyDesc" class="moneyinput" placeholder="Description"><select id="moneyType" class="moneyinput"><option value="in">Income</option><option value="out">Expense / withdrawal</option></select><input id="moneyAmount" class="moneyinput" inputmode="decimal" placeholder="Amount"><button id="moneyAdd" class="btn dark">Add</button></div>
+   <div id="ledger" class="ledger"></div>
+   <label class="field" style="display:block;margin-top:14px">Pipeline / money notes<textarea id="moneyNotes"></textarea></label>
+ </section></div>
+</section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+function setSharedMsg(msg){const el=document.getElementById("sharedMsg");if(el)el.textContent=msg||""}
+function openSharedModal(){document.getElementById("sharedModal")?.classList.add("open");updateSharedUI()}
+function closeSharedModal(){document.getElementById("sharedModal")?.classList.remove("open")}
+function updateSharedUI(){
+ const out=document.getElementById("sharedSignedOut"), inn=document.getElementById("sharedSignedIn");
+ const pill=document.getElementById("sharedPill"), line=document.getElementById("sharedUserLine");
+ if(sharedUser){
+   if(out)out.style.display="none"; if(inn)inn.style.display="block";
+   if(line)line.textContent=sharedUser.email||"Shared account";
+   if(pill){pill.textContent="Shared ✓";pill.classList.add("online")}
+ }else{
+   if(out)out.style.display="block"; if(inn)inn.style.display="none";
+   if(pill){pill.textContent="Shared: connect";pill.classList.remove("online")}
+ }
+}
+async function sharedSignIn(){
+ const email=document.getElementById("sharedEmail")?.value.trim();
+ const password=document.getElementById("sharedPassword")?.value||"";
+ if(!email||!password){setSharedMsg("Enter email and password.");return}
+ setSharedMsg("Signing in…");
+ const {data,error}=await sb.auth.signInWithPassword({email,password});
+ if(error){setSharedMsg(error.message);return}
+ sharedUser=data.user; updateSharedUI(); await loadSharedState(true); setSharedMsg("Connected. This workspace is now shared.");
+}
+async function sharedSignUp(){
+ const email=document.getElementById("sharedEmail")?.value.trim();
+ const password=document.getElementById("sharedPassword")?.value||"";
+ if(!email||password.length<6){setSharedMsg("Use a valid email and a password with at least 6 characters.");return}
+ setSharedMsg("Creating shared login…");
+ const {data,error}=await sb.auth.signUp({email,password});
+ if(error){setSharedMsg(error.message);return}
+ if(data.session){
+   sharedUser=data.user; updateSharedUI(); await loadSharedState(true);
+   setSharedMsg("Shared login created and connected.");
+ }else{
+   setSharedMsg("Account created. Check the email inbox to confirm it, then Sign in.");
+ }
+}
+async function sharedSignOut(){
+ await sb.auth.signOut(); sharedUser=null; lastRemoteUpdated=null; updateSharedUI(); setSharedMsg("Signed out.");
+}
+async function loadSharedState(firstConnect=false){
+ if(!sharedUser)return;
+ const {data,error}=await sb.from("workspace_state").select("state,updated_at").eq("user_id",sharedUser.id).maybeSingle();
+ if(error){console.error(error);setSharedMsg("Could not load shared data.");return}
+ if(!data){
+   await pushSharedState();
+   setSharedMsg("Your current workspace was uploaded as the shared starting point.");
+   return;
+ }
+ lastRemoteUpdated=data.updated_at;
+ const remote=data.state||{};
+ const localJSON=JSON.stringify(state), remoteJSON=JSON.stringify(remote);
+ if(remoteJSON!==localJSON){
+   localStorage.setItem("projectDeskProgressV1",remoteJSON);
+   if(firstConnect){
+     setSharedMsg("Shared data loaded. Refreshing once…");
+     setTimeout(()=>location.reload(),250);
+   }else{
+     location.reload();
+   }
+ }
+}
+async function syncNow(){
+ if(!sharedUser){openSharedModal();return}
+ setSharedMsg("Syncing…"); await loadSharedState(false); setSharedMsg("Up to date.");
+}
+async function initSharedSync(){
+ const {data:{session}}=await sb.auth.getSession();
+ sharedUser=session?.user||null;
+ updateSharedUI();
+ if(sharedUser){
+   await loadSharedState(false);
+   setInterval(async()=>{
+     if(!sharedUser || document.hidden)return;
+     const {data,error}=await sb.from("workspace_state").select("state,updated_at").eq("user_id",sharedUser.id).maybeSingle();
+     if(error||!data)return;
+     if(lastRemoteUpdated && data.updated_at===lastRemoteUpdated)return;
+     lastRemoteUpdated=data.updated_at;
+     const remoteJSON=JSON.stringify(data.state||{});
+     if(remoteJSON!==JSON.stringify(state)){
+       localStorage.setItem("projectDeskProgressV1",remoteJSON);
+       location.reload();
+     }
+   },12000);
+ }
+}
+window.addEventListener("load",initSharedSync);
+
+
+function setGateMsg(msg){const el=document.getElementById("gateMsg");if(el)el.textContent=msg||""}
+function unlockOneSpace(){
+ document.body.classList.remove("auth-locked");
+ document.body.style.overflow="";
+ updateSharedUI();
+}
+async function gateSignIn(){
+ const email=(document.getElementById("gateEmail")?.value||"").trim();
+ const password=document.getElementById("gatePassword")?.value||"";
+ if(!email||!password){setGateMsg("Enter email and password.");return}
+ setGateMsg("Signing in…");
+ const {data,error}=await sb.auth.signInWithPassword({email,password});
+ if(error){setGateMsg(error.message);return}
+ sharedUser=data.user;
+ unlockOneSpace();
+ await loadSharedState(true);
+ setGateMsg("");
+}
+async function gateSignUp(){
+ const email=(document.getElementById("gateEmail")?.value||"").trim();
+ const password=document.getElementById("gatePassword")?.value||"";
+ if(!email||password.length<6){setGateMsg("Enter an email and a password with at least 6 characters.");return}
+ setGateMsg("Creating shared login…");
+ const {data,error}=await sb.auth.signUp({email,password});
+ if(error){setGateMsg(error.message);return}
+ if(data.session){
+   sharedUser=data.user;
+   unlockOneSpace();
+   await loadSharedState(true);
+ }else{
+   setGateMsg("Check the email inbox to confirm the account, then sign in.");
+ }
+}
+async function initPrivateGate(){
+ const {data:{session}}=await sb.auth.getSession();
+ if(session?.user){
+   sharedUser=session.user;
+   unlockOneSpace();
+ }else{
+   document.body.classList.add("auth-locked");
+ }
+}
+window.addEventListener("load",initPrivateGate);
+
+</script>
+<script>
+const SUPABASE_URL="https://ydixduyesmtqtdopoiql.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_EA1nmOI1-SrPjnpTAK-a-w_iYBDFpxb";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let sharedUser=null, sharedSaveTimer=null, lastRemoteUpdated=null;
+const DATA={"leads": [{"name": "NextGen Real Estate", "area": "Downtown Beirut", "phone": "96181023073", "wa": true, "ig": "", "type": "Real Estate", "priority": "A", "why": "Luxury residential/commercial brokerage with current digital presence and direct WhatsApp.", "igStatus": "not_found"}, {"name": "RAMCO Real Estate Advisers", "area": "Clemenceau, Beirut", "phone": "9613050052", "wa": true, "ig": "", "type": "Real Estate", "priority": "A", "why": "Established brokerage/advisory firm; strong buyer and property-owner overlap.", "igStatus": "not_found"}, {"name": "AS.Properties", "area": "Beirut / Coast", "phone": "96171115980", "wa": true, "ig": "as.properties.lb", "type": "Real Estate", "priority": "A", "why": "Current 2026 property platform targeting buyers, investors and expats; WhatsApp + Instagram.", "igStatus": "verified"}, {"name": "Cedar Keys Estates", "area": "Airport Road, Beirut", "phone": "9613129992", "wa": true, "ig": "", "type": "Real Estate", "priority": "A", "why": "Active brokerage; explicitly uses WhatsApp as primary client channel.", "igStatus": "not_found"}, {"name": "Amara Development", "area": "Beirut / Faqra", "phone": "96171187377", "wa": true, "ig": "amaradevelopmentlb", "type": "Developer", "priority": "A", "why": "Active development with project currently in progress; direct WhatsApp/mobile.", "igStatus": "verified"}, {"name": "Kronfol Homes", "area": "Ras Beirut", "phone": "9613130044", "wa": false, "ig": "kronfolhomes", "type": "Developer", "priority": "A", "why": "Long-established developer with Skyline Towers Phase 2 under construction.", "igStatus": "verified"}, {"name": "StayBeyond", "area": "Lebanon / Beirut", "phone": "", "wa": false, "ig": "", "type": "Property Manager", "priority": "A", "why": "Short-term-rental manager; recurring furnishing, refresh and property-readiness potential.", "igStatus": "not_found"}, {"name": "S-Gestion", "area": "Sodeco, Beirut", "phone": "9611616000", "wa": false, "ig": "", "type": "Property Manager", "priority": "A", "why": "Large property letting/management footprint; many landlords and units under management.", "igStatus": "not_found"}, {"name": "Rukun Real Estate", "area": "Beirut", "phone": "9613709240", "wa": true, "ig": "", "type": "Real Estate / Property Mgmt", "priority": "A", "why": "Brokerage plus property management and interior-design adjacency; direct WhatsApp.", "igStatus": "not_found"}, {"name": "REDPRO Real Estate", "area": "Beirut", "phone": "96171607474", "wa": false, "ig": "", "type": "Real Estate", "priority": "A", "why": "Active Beirut agency with current business presence and direct mobile.", "igStatus": "not_found"}, {"name": "JSK Real Estate", "area": "Zalka / Metn", "phone": "96170200076", "wa": true, "ig": "", "type": "Real Estate", "priority": "A", "why": "Active multi-area brokerage with Metn/Baabda reach; strong buyer referral potential.", "igStatus": "not_found"}, {"name": "Sakan Real Estate", "area": "Hamra, Beirut", "phone": "9613250347", "wa": false, "ig": "sakanrealestate.lb", "type": "Real Estate / Property Mgmt", "priority": "A", "why": "Brokerage plus property-management services; useful owner and renter pipeline.", "igStatus": "verified"}, {"name": "K Properties Lebanon", "area": "Lebanon", "phone": "96171467684", "wa": true, "ig": "kevin.barbar", "type": "Real Estate", "priority": "A", "why": "Current 2026 brokerage site; mobile-first WhatsApp lead flow and active social presence.", "igStatus": "unverified"}, {"name": "SD Development", "area": "Hamra, Beirut", "phone": "9613753336", "wa": true, "ig": "", "type": "Developer", "priority": "A", "why": "Developer explicitly open to sales/partnership WhatsApp; current 2026 presence.", "igStatus": "not_found"}, {"name": "Farhat Development", "area": "Beirut", "phone": "9611781888", "wa": false, "ig": "", "type": "Developer", "priority": "A", "why": "Multiple in-progress/planned Beirut residential developments.", "igStatus": "not_found"}, {"name": "FFA Real Estate", "area": "Beirut Central District", "phone": "9611960777", "wa": false, "ig": "", "type": "Developer", "priority": "A", "why": "Established real-estate developer/investment firm in central Beirut.", "igStatus": "not_found"}, {"name": "Byout Beirut", "area": "Beirut", "phone": "96181880588", "wa": false, "ig": "", "type": "Short-term Rental", "priority": "A", "why": "Short-term apartment rental operator; furnishing/refresh needs can recur.", "igStatus": "not_found"}, {"name": "Ecolife", "area": "Mina El Hosn, Beirut", "phone": "9611366171", "wa": false, "ig": "", "type": "Property Manager", "priority": "A", "why": "Property maintenance + management company; strong execution/referral adjacency.", "igStatus": "not_found"}, {"name": "Beirut Living Real Estate", "area": "Beirut", "phone": "96176444329", "wa": false, "ig": "", "type": "Real Estate / Property Mgmt", "priority": "A", "why": "Combines real estate, contracting, interior design and property management.", "igStatus": "not_found"}, {"name": "Ramy Real Estate", "area": "Mansourieh", "phone": "9613003433", "wa": true, "ig": "", "type": "Real Estate", "priority": "A", "why": "Active brokerage with WhatsApp and current property search presence.", "igStatus": "not_found"}, {"name": "Phoenicia Property", "area": "Achrafieh, Beirut", "phone": "96176781736", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Established Beirut brokerage focused on buying, selling and renting.", "igStatus": "not_found"}, {"name": "Urban Brokerage", "area": "Beirut", "phone": "96176775031", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Verified brokerage with long-running local presence.", "igStatus": "not_found"}, {"name": "PBM Property Brokerage & Management", "area": "Downtown Beirut", "phone": "9611993399", "wa": false, "ig": "", "type": "Property Mgmt / Brokerage", "priority": "B", "why": "Property brokerage and management is directly adjacent to furnishing/refurbishment.", "igStatus": "not_found"}, {"name": "Lebanon Links Real Estate", "area": "Zalka", "phone": "9611874078", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Long-running brokerage in a strong residential market.", "igStatus": "not_found"}, {"name": "Dealers Group", "area": "Hamra, Beirut", "phone": "96171400453", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Established real-estate services firm with mobile contact.", "igStatus": "not_found"}, {"name": "Gebeily Real Estate", "area": "Rabieh / Mount Lebanon", "phone": "9613828332", "wa": false, "ig": "", "type": "Real Estate / Renovation", "priority": "B", "why": "Real estate plus renovations/decorations makes collaboration especially relevant.", "igStatus": "not_found"}, {"name": "Lead Real Estate", "area": "Hazmieh", "phone": "9615955954", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Brokerage/advisory in Hazmieh with residential buyer potential.", "igStatus": "not_found"}, {"name": "Kaizen Real Estate", "area": "Badaro, Beirut", "phone": "9611384414", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Established Beirut brokerage.", "igStatus": "not_found"}, {"name": "Cedars Real Estate", "area": "Adlieh, Beirut", "phone": "9613344210", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Local brokerage with mobile contact.", "igStatus": "not_found"}, {"name": "Premium Seven", "area": "Solidere, Beirut", "phone": "9613263762", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Luxury apartment focus gives higher-value interior referral potential.", "igStatus": "not_found"}, {"name": "Lebanon Dreams Real Estate", "area": "Beirut", "phone": "96170730004", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Established brokerage with mobile contact and long-running directory presence.", "igStatus": "not_found"}, {"name": "Prestigious Real Estate", "area": "Zalka", "phone": "9614714015", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Zalka/Metn residential overlap.", "igStatus": "not_found"}, {"name": "Property Shop", "area": "Achrafieh", "phone": "9611331888", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Property-focused firm in a high-value Beirut residential district.", "igStatus": "not_found"}, {"name": "Plus Properties", "area": "Corniche El Nahr", "phone": "9611572777", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Property company with Beirut reach.", "igStatus": "not_found"}, {"name": "Premiere Properties", "area": "Hazmieh", "phone": "9615953075", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Hazmieh brokerage with residential-client potential.", "igStatus": "not_found"}, {"name": "Har Properties", "area": "Badaro", "phone": "9611392819", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Real-estate presence in Badaro; suitable referral outreach.", "igStatus": "not_found"}, {"name": "Dyaar Development Co", "area": "Verdun", "phone": "9611803857", "wa": false, "ig": "", "type": "Developer", "priority": "B", "why": "Development company in Beirut; possible buyer handover/interior collaboration.", "igStatus": "not_found"}, {"name": "Greenstone Real Estate Developers", "area": "Beirut", "phone": "9611566066", "wa": false, "ig": "", "type": "Developer", "priority": "B", "why": "Developer contact; potential for project/buyer collaboration.", "igStatus": "not_found"}, {"name": "Tager Developers", "area": "Achrafieh", "phone": "9611216689", "wa": false, "ig": "", "type": "Developer / Construction", "priority": "B", "why": "Construction/development company in Achrafieh.", "igStatus": "not_found"}, {"name": "CIBCO Real Estate Developer", "area": "Beirut", "phone": "9611999665", "wa": false, "ig": "", "type": "Developer", "priority": "B", "why": "Developer contact in Beirut.", "igStatus": "not_found"}, {"name": "Wakim Group", "area": "Beirut / Lebanon", "phone": "9613258946", "wa": true, "ig": "", "type": "Kitchen / Furniture Partner", "priority": "A", "why": "Kitchens, wardrobes, flooring and appliances; strong mutual-referral potential.", "igStatus": "not_found"}, {"name": "SARA Showroom - Raouche", "area": "Raouche, Beirut", "phone": "9611862199", "wa": false, "ig": "", "type": "Materials / Bathroom Partner", "priority": "B", "why": "Building materials and bathroom remodeling; useful trade/referral partner.", "igStatus": "not_found"}, {"name": "SARA Showroom - Jdeideh", "area": "Jdeideh", "phone": "9611891426", "wa": false, "ig": "", "type": "Materials / Bathroom Partner", "priority": "B", "why": "Metn showroom serving homeowners and renovation clients.", "igStatus": "not_found"}, {"name": "LACASA Showroom", "area": "Beirut", "phone": "96171300109", "wa": false, "ig": "", "type": "Furniture Partner", "priority": "B", "why": "Premium furniture showroom; collaboration and referral potential.", "igStatus": "not_found"}, {"name": "Home Improvement", "area": "Mansourieh", "phone": "9614409645", "wa": false, "ig": "", "type": "Kitchen / Interior Partner", "priority": "B", "why": "Kitchen furniture + cabinet making + interior design; relevant trade network.", "igStatus": "not_found"}, {"name": "Furnart Lebanon", "area": "Beit Chabab / Metn", "phone": "9614983471", "wa": false, "ig": "", "type": "Home / Outdoor Partner", "priority": "B", "why": "Kitchen/outdoor/home products and homeowner traffic.", "igStatus": "not_found"}, {"name": "A La Maison", "area": "Biaqout / Metn", "phone": "9611480521", "wa": false, "ig": "", "type": "Furniture Partner", "priority": "B", "why": "Furniture/home showroom with local homeowner audience.", "igStatus": "not_found"}, {"name": "Hijazi Showroom", "area": "Beirut", "phone": "96181797168", "wa": false, "ig": "", "type": "Furniture / Decor Partner", "priority": "B", "why": "Furniture plus interior-decorator category; collaboration angle.", "igStatus": "not_found"}, {"name": "Siclom", "area": "Beirut", "phone": "9611801717", "wa": false, "ig": "", "type": "Property Manager", "priority": "B", "why": "Property-management company; recurring owner/property needs.", "igStatus": "not_found"}, {"name": "TEKRAM", "area": "Beirut", "phone": "9613161710", "wa": false, "ig": "", "type": "Property Manager", "priority": "B", "why": "Property-management contact with potential recurring property work.", "igStatus": "not_found"}, {"name": "Ras Beirut Property Services", "area": "Ras Beirut", "phone": "9613747076", "wa": false, "ig": "", "type": "Property Consultant", "priority": "B", "why": "Directly serves property owners in Ras Beirut.", "igStatus": "not_found"}, {"name": "CedarStar Services", "area": "Naccache / Metn", "phone": "96181718102", "wa": false, "ig": "", "type": "Real Estate", "priority": "C", "why": "Local Metn real-estate contact; verify activity before outreach.", "igStatus": "not_found"}, {"name": "ReBold", "area": "Baabda", "phone": "96176761100", "wa": false, "ig": "", "type": "Real Estate", "priority": "B", "why": "Current local-business listing and mobile number in Baabda.", "igStatus": "not_found"}, {"name": "Ajram Real Estate", "area": "Zouk Mosbeh", "phone": "9619220260", "wa": false, "ig": "", "type": "Real Estate", "priority": "C", "why": "Keserwan residential reach; verify active channel before outreach.", "igStatus": "not_found"}, {"name": "Aroyan Real Estate", "area": "Rabieh / Antelias", "phone": "9614524526", "wa": false, "ig": "", "type": "Real Estate", "priority": "C", "why": "High-value residential area; verify activity first.", "igStatus": "not_found"}, {"name": "Dream Homes", "area": "Jeita / Keserwan", "phone": "9614921325", "wa": false, "ig": "", "type": "Real Estate / Property Mgmt", "priority": "B", "why": "Real-estate marketing and management in Keserwan.", "igStatus": "not_found"}, {"name": "Bricks Real Estate Solutions", "area": "Minet El Hosn", "phone": "9611740081", "wa": false, "ig": "", "type": "Real Estate", "priority": "C", "why": "Central Beirut real-estate contact; verify current activity.", "igStatus": "not_found"}, {"name": "Brokers XP", "area": "Downtown Beirut", "phone": "9611999750", "wa": false, "ig": "", "type": "Real Estate", "priority": "C", "why": "Downtown brokerage lead; verify current activity.", "igStatus": "not_found"}, {"name": "Patrimoine Conseil", "area": "Sodeco", "phone": "9611335011", "wa": false, "ig": "", "type": "Real Estate / Advisory", "priority": "C", "why": "Property advisory contact in Sodeco; verify current activity.", "igStatus": "not_found"}, {"name": "Asasate Development", "area": "Old Airport Road", "phone": "9613707272", "wa": false, "ig": "", "type": "Developer", "priority": "B", "why": "Real-estate development focus; potential project/buyer collaboration.", "igStatus": "not_found"}], "aya_goals": [{"id": "mypage", "area": "Build", "name": "Build My Page", "why": "Create a page that feels like you and can grow into a real platform.", "steps": ["Define what belongs on Aya’s page now", "Choose one warm + joyful color direction", "Make the moodboard", "Choose one logo direction", "Create the first 3 content pieces", "Publish the first piece"]}, {"id": "product", "area": "Build", "name": "Product → Website → App", "why": "Turn a real problem into something people may actually pay for.", "steps": ["Write the exact problem in one sentence", "Choose the target user", "Talk to 3 possible users", "Choose the must-have MVP function", "Sketch the website flow", "Build the first website version"]}, {"id": "interior", "area": "Build", "name": "Interior Business", "why": "Create consistent opportunities and move toward the $5k/month target.", "steps": ["Contact the current lead batch", "Track replies and warm conversations", "Book one serious conversation", "Send one proposal", "Close the first tracked project", "Repeat what worked"]}, {"id": "calm", "area": "Life", "name": "Build a calmer routine", "why": "Support your energy and focus so the rest of the system stays sustainable.", "steps": ["Meditate 10 min × 3 this week", "Complete 3 movement sessions this week", "Listen to 2 useful podcast episodes", "Choose a simple repeatable morning routine"]}], "growth_ideas": ["Post one recent finished space with a short problem → solution caption", "Upload 5 strong project photos to the WhatsApp Business catalog", "Update one Behance project with the latest work", "Post one before/after or render-to-result story", "Message one real-estate or furniture partner", "Ask one past client for permission to share finished photos", "Create one simple FAQ story: process, timeline, or what clients get", "Add one commercial project/service example to WhatsApp"], "product_ideas": ["Write down one client problem you hear repeatedly", "List 3 things clients always ask before hiring an interior designer", "Find one task in interior work that is repetitive and could become a tool/template", "Choose one buyer: homeowner, Airbnb host, café owner, real-estate agent, or designer", "Test one product idea by asking: would someone pay to save time, money, or uncertainty?"]};
+let state={};try{state=JSON.parse(localStorage.getItem('projectDeskProgressV1')||'{}')}catch(e){state={}}
+function save(){
+  localStorage.setItem('projectDeskProgressV1',JSON.stringify(state));
+  if(sharedUser){
+    clearTimeout(sharedSaveTimer);
+    sharedSaveTimer=setTimeout(pushSharedState,350);
+  }
+}
+async function pushSharedState(){
+  if(!sharedUser)return;
+  const payload={user_id:sharedUser.id,state};
+  const {data,error}=await sb.from('workspace_state').upsert(payload,{onConflict:'user_id'}).select('updated_at').single();
+  if(!error && data?.updated_at) lastRemoteUpdated=data.updated_at;
+  if(error) console.error('Shared save failed',error);
+}
+function enter(id){document.getElementById('chooser').style.display='none';document.querySelectorAll('.workspace').forEach(w=>w.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+function home(){document.querySelectorAll('.workspace').forEach(w=>w.classList.remove('active'));document.getElementById('chooser').style.display='flex';window.scrollTo(0,0)}
+function showPage(id,tabsId){document.getElementById(tabsId).querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));document.getElementById(tabsId).closest('.workspace').querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));window.scrollTo(0,0)}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showPage(b.dataset.page,b.closest('.tabs').id));
+
+state.goals=state.goals||{};
+DATA.aya_goals.forEach(g=>{state.goals[g.id]=state.goals[g.id]||{step:0,status:'',blocker:'',notes:''}});
+function goalHTML(g,compact=false){
+ const st=state.goals[g.id], idx=Math.min(st.step,g.steps.length-1), complete=st.step>=g.steps.length;
+ const segs=g.steps.map((_,i)=>`<span class="seg ${i<st.step?'done':i===st.step&&!complete?'current':''}"></span>`).join('');
+ const next=complete?'Goal complete — review what to build next':g.steps[idx];
+ return `<div class="goal"><div class="goal-top"><div><div class="goal-area">${g.area}</div><div class="goal-name">${g.name}</div></div><span class="pill">${complete?'complete':'step '+(idx+1)+'/'+g.steps.length}</span></div><div class="goal-why">${g.why}</div><div class="path">${segs}</div><div class="nextbox"><div class="small">Next move</div><div class="nexttext">${next}</div></div>
+ ${compact?'':`<div class="full-roadmap">${g.steps.map((step,i)=>`<div class="full-step ${i<st.step?'done':i===st.step&&!complete?'current':i===st.step+1&&!complete?'next':''}"><span class="n">${i+1}</span><span class="txt">${step}</span><span class="lab">${i<st.step?'done':i===st.step&&!complete?'current':i===st.step+1&&!complete?'next':'later'}</span></div>`).join('')}</div><div class="editgrid"><div class="field"><span>Current stage</span><div class="moneyinput" style="margin-top:5px;background:rgba(255,255,255,.48);font-weight:800">${complete?'Complete':g.steps[idx]}</div></div><label class="field">What is blocking me?<input data-block="${g.id}" value="${escapeHtml(st.blocker)}" placeholder="Only if something is stuck"></label></div><label class="field">Project notes<textarea data-notes="${g.id}">${escapeHtml(st.notes)}</textarea></label>`}<div class="actions">${!complete?`<label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:850;cursor:pointer"><input type="checkbox" data-done="${g.id}" style="width:17px;height:17px"> Mark next move done</label>`:''}${st.step>0?`<button class="btn" data-back="${g.id}">Undo last step</button>`:''}</div></div>`;
+}
+function escapeHtml(s){return (s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function renderGoals(){
+ document.getElementById('buildGoals').innerHTML=DATA.aya_goals.filter(g=>g.area==='Build').map(g=>goalHTML(g)).join('');
+ const life=DATA.aya_goals.find(g=>g.id==='calm');document.getElementById('lifeGoal').innerHTML=goalHTML(life);
+ document.querySelectorAll('[data-done]').forEach(b=>b.onchange=()=>{if(b.checked){state.goals[b.dataset.done].step++;save();renderAll()}});
+ document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>{state.goals[b.dataset.back].step=Math.max(0,state.goals[b.dataset.back].step-1);save();renderAll()});
+ document.querySelectorAll('[data-block]').forEach(i=>i.oninput=()=>{state.goals[i.dataset.block].blocker=i.value;save()});
+ document.querySelectorAll('[data-notes]').forEach(i=>i.oninput=()=>{state.goals[i.dataset.notes].notes=i.value;save()});
+}
+
+
+state.ayaTasks = state.ayaTasks || [];
+function taskKey(source,text){return source+"||"+text}
+function addToToday(source,text){
+ if(!text) return;
+ const k=taskKey(source,text);
+ if(!state.ayaTasks.some(t=>taskKey(t.source,t.text)===k && !t.done)){
+   state.ayaTasks.push({source,text,done:false,today:true,created:new Date().toISOString()});
+   save();
+ }
+ renderAyaToday(); renderPools();
+}
+window.addCreateTask=function(action){
+ const piece=(document.getElementById('contentNext')?.value||'').trim();
+ addToToday('Create', piece ? `${action}: ${piece}` : action);
+}
+window.addCustomTasks=function(id,source){
+ const el=document.getElementById(id); if(!el) return;
+ const lines=el.value.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+ lines.forEach(text=>{
+   if(!state.ayaTasks.some(t=>taskKey(t.source,t.text)===taskKey(source,text))){
+     state.ayaTasks.push({source,text,done:false,today:false,created:new Date().toISOString()});
+   }
+ });
+ el.value=''; state[id]=''; save(); renderPools();
+}
+function renderPools(){
+ const map={
+  homePool:'Home', healthPool:'Health & Peace', workPool:'Work & Money',
+  learnPool:'Learning', pagePool:'My Page'
+ };
+ Object.entries(map).forEach(([id,source])=>{
+   const root=document.getElementById(id); if(!root) return;
+   const items=state.ayaTasks.filter(t=>t.source===source && !t.done && !t.today);
+   root.innerHTML=items.map((t,i)=>`<div class="pool-row"><span>${escapeHtml(t.text)}</span><button class="btn" data-pool="${encodeURIComponent(taskKey(t.source,t.text))}">Add to Today</button></div>`).join('');
+ });
+ document.querySelectorAll('[data-pool]').forEach(b=>b.onclick=()=>{
+   const key=decodeURIComponent(b.dataset.pool);
+   const t=state.ayaTasks.find(x=>taskKey(x.source,x.text)===key && !x.done);
+   if(t){t.today=true;save();renderPools();renderAyaToday()}
+ });
+}
+function renderAyaToday(){
+ const root=document.getElementById('todayChosen'); if(!root)return;
+ const items=state.ayaTasks.filter(t=>t.today && !t.done);
+ const empty=document.getElementById('todayEmpty'); if(empty) empty.style.display=items.length?'none':'block';
+ root.innerHTML=items.map((t,i)=>`<div class="task"><input type="checkbox" data-donetask="${i}"><div><div class="tarea">${escapeHtml(t.source)}</div><div class="tt">${escapeHtml(t.text)}</div></div><button class="btn" data-remove="${i}">Remove</button></div>`).join('');
+ const chosen=state.ayaTasks.filter(t=>t.today && !t.done);
+ root.querySelectorAll('[data-donetask]').forEach((b,i)=>b.onchange=()=>{chosen[i].done=true;chosen[i].today=false;save();renderAyaToday();renderPools()});
+ root.querySelectorAll('[data-remove]').forEach((b,i)=>b.onclick=()=>{chosen[i].today=false;save();renderAyaToday();renderPools()});
+}
+
+window.openLifeCard=function(id){
+ document.querySelectorAll('.detail-panel').forEach(p=>p.classList.remove('active'));
+ const panel=document.getElementById(id); if(panel){panel.classList.add('active');panel.scrollIntoView({behavior:'smooth',block:'nearest'});}
+ const ph=document.querySelector('.details-placeholder'); if(ph) ph.style.display='none';
+ bindCleanTasks();
+}
+function bindCleanTasks(){
+ document.querySelectorAll('.clean-task').forEach(row=>{
+   const btn=row.querySelector('button'); if(!btn)return;
+   btn.onclick=()=>addToToday(row.dataset.source,row.dataset.text);
+ });
+}
+
+function bindAddTodayButtons(){
+ document.querySelectorAll('[data-addtoday]').forEach(b=>b.onclick=()=>{
+   const [source,text]=b.dataset.addtoday.split('|');
+   addToToday(source,text);
+ });
+}
+
+function bindText(ids){
+ ids.forEach(id=>{
+   const el=document.getElementById(id);
+   if(!el) return;
+   el.value=state[id]||'';
+   el.oninput=()=>{state[id]=el.value;save()}
+ })
+}
+bindText(['contentNext','contentWhy','contentDraft','notes','growthNotes','prodProblem','prodBuyer','prodIdeas','moneyNotes']);
+
+
+const knownInstagram={
+  "Dyarcom Real Estate":"dyarcom_realestate",
+  "Kronfol Homes":"kronfolhomes"
+};
+const replyTemplates={
+ English:"We’re an interior design studio. Do you sometimes have clients who buy a property and then ask you about interior design or furnishing?",
+ Arabic:"نحنا مكتب تصميم داخلي. أوقات بيكون عندكن زباين بيشتروا عقار وبيسألوكن عن تصميم داخلي أو فرش؟",
+ Arabizi:"Nehna interior design studio. Aw2at bi kun 3andkon clients bi yeshtero property w byes2alokon 3an interior design aw furnishing?"
+};
+const leadStages=["followed","engaged","dm","contacted","replied","warm"];
+
+function leadState(n){
+ state.leads=state.leads||{};
+ state.leads[n]=state.leads[n]||{};
+ const st=state.leads[n];
+ if(!st.instagram && knownInstagram[n]) st.instagram=knownInstagram[n];
+ return st;
+}
+function copyText(txt){navigator.clipboard?.writeText(txt)}
+function cleanIG(v){return (v||"").trim().replace(/^https?:\/\/(www\.)?instagram\.com\//i,"").replace(/^@/,"").replace(/\/.*$/,"")}
+function openIG(name){
+ const st=leadState(name), h=cleanIG(st.instagram);
+ if(h) window.open("https://www.instagram.com/"+h+"/","_blank");
+}
+function toggleStage(name,stage){
+ const st=leadState(name);
+ st[stage]=!st[stage];
+ if(stage==="replied" && st[stage] && !st.templateLang) st.templateLang="English";
+ save();renderLeads();renderMCount();renderMToday();renderMohamadOverview();
+}
+function setIG(name,val){const st=leadState(name);st.instagram=cleanIG(val);save();renderLeads();renderMToday()}
+function setLang(name,val){const st=leadState(name);st.templateLang=val;save();renderLeads()}
+
+let leadFilter='today';
+function currentBatchIndex(){
+ const d=new Date();
+ // Fixed sprint Aug 26–31, 2026; outside it, show first unfinished batch.
+ if(d.getFullYear()===2026 && d.getMonth()===7 && d.getDate()>=26 && d.getDate()<=31) return d.getDate()-26;
+ for(let b=0;b<6;b++){
+   const chunk=DATA.leads.slice(b*10,b*10+10);
+   if(chunk.some(l=>{const st=leadState(l.name);return !(st.contacted||st.dm)})) return b;
+ }
+ return 5;
+}
+window.setLeadFilter=function(f){leadFilter=f;renderLeads()}
+function leadApproach(l){
+ if(l.type.includes('Property Manager')||l.type.includes('Short-term')) return 'Property refresh / furnishing / turnover collaboration';
+ if(l.type.includes('Developer')) return 'Buyer handover + interior execution partnership';
+ if(l.type.includes('Partner')) return 'Mutual referral / collaboration';
+ return 'Buyer referral after purchase or rental';
+}
+
+
+function instagramStatusMeta(l,st){
+ const ig=cleanIG(st.instagram||l.ig||"");
+ const status=l.igStatus||"not_found";
+ if(ig && status==="verified") return {label:"Instagram verified", cls:"ig-verified"};
+ if(ig) return {label:"Instagram unverified", cls:"ig-unverified"};
+ return {label:"Instagram not found", cls:"ig-missing"};
+}
+
+function statusMeta(st){
+ if(st.warm) return {label:"Warm", cls:"status-green"};
+ if(st.replied) return {label:"Replied", cls:"status-blue"};
+ if(st.dm||st.contacted) return {label:"Contacted", cls:"status-warm"};
+ if(st.followed) return {label:"Followed", cls:"status-blue"};
+ return {label:"Not contacted", cls:"status-muted"};
+}
+function passesLeadFilters(l,st){
+ const q=(document.getElementById("leadSearch")?.value||"").toLowerCase().trim();
+ if(q && !(`${l.name} ${l.area} ${l.type}`.toLowerCase().includes(q))) return false;
+ const sf=document.getElementById("leadStatusFilter")?.value||"all";
+ if(sf==="not" && (st.contacted||st.dm||st.replied||st.warm)) return false;
+ if(sf==="replied" && !st.replied) return false;
+ if(sf==="warm" && !st.warm) return false;
+ const cf=document.getElementById("leadChannelFilter")?.value||"all";
+ const ig=cleanIG(st.instagram);
+ if(cf==="wa" && !l.wa) return false;
+ if(cf==="ig" && !ig) return false;
+ if(cf==="phone" && !l.phone) return false;
+ return true;
+}
+
+function renderLeads(){
+ const r=document.getElementById('leadList'); if(!r)return; r.innerHTML='';
+ const batch=currentBatchIndex();
+ let items=DATA.leads.map((l,i)=>({l,i,st:leadState(l.name)}));
+ if(leadFilter==='today') items=items.slice(batch*10,batch*10+10);
+ else if(leadFilter==='A') items=items.filter(x=>x.l.priority==='A');
+ items=items.filter(x=>passesLeadFilters(x.l,x.st));
+
+ const note=document.getElementById('leadBatchNote');
+ if(note){
+   const dates=['Aug 26','Aug 27','Aug 28','Aug 29','Aug 30','Aug 31'];
+   note.innerHTML=leadFilter==='today'
+     ? `<b>${dates[batch]} · Today’s 10</b><p>Contact first. Open More only when you need context or tracking.</p>`
+     : leadFilter==='A'
+     ? `<b>A-priority</b><p>Stronger-potential leads only.</p>`
+     : `<b>All 60</b><p>Use search and filters to keep this list light.</p>`;
+ }
+
+ items.forEach(({l,i,st})=>{
+   const ig=cleanIG(st.instagram), phone=l.phone, meta=statusMeta(st);
+   const div=document.createElement("div"); div.className="lead-simple";
+   div.innerHTML=`
+     <div class="lead-simple-main">
+       <div>
+         <div class="lead-simple-name">${i+1}. ${escapeHtml(l.name)}</div>
+         <div class="lead-simple-area">${escapeHtml(l.area)}</div>
+       </div>
+       <div class="lead-simple-status"><span class="status-dot ${meta.cls}"></span>${meta.label}</div>
+     </div>
+
+     <div class="lead-simple-actions">
+       ${ig?`<button class="btn primary" data-ig>${(l.igStatus||"")==="verified"?"Instagram ✓":"Instagram"}</button>`:''}
+       ${l.wa?`<button class="btn primary" data-wa>WhatsApp</button>`:''}
+       ${phone?`<button class="btn secondary" data-call>Call</button>`:''}
+       ${phone?`<button class="btn secondary" data-copy>Copy number</button>`:''}
+     </div>
+
+     <button class="lead-more-toggle" data-more>More · tracking & message ↓</button>
+
+     <div class="lead-more">
+       <div class="lead-meta-line">${escapeHtml(l.type)} · Priority ${escapeHtml(l.priority)} · <span class="ig-status ${instagramStatusMeta(l,st).cls}">${instagramStatusMeta(l,st).label}</span></div>
+       <div class="lead-detail-copy"><b>Why:</b> ${escapeHtml(l.why)}</div>
+       <div class="lead-detail-copy"><b>Approach:</b> ${escapeHtml(leadApproach(l))}</div>
+
+       <div class="lead-stage-strip">
+         <button class="${st.followed?'on':''}" data-stage="followed">Followed</button>
+         <button class="${st.engaged?'on':''}" data-stage="engaged">Engaged</button>
+         <button class="${st.dm?'on':''}" data-stage="dm">DM sent</button>
+         <button class="${st.contacted?'on':''}" data-stage="contacted">Contacted</button>
+         <button class="${st.replied?'on':''}" data-stage="replied">Replied</button>
+         <button class="${st.warm?'on':''}" data-stage="warm">Warm</button>
+       </div>
+
+       <div class="lead-message-row">
+         <button class="btn secondary" data-greet>Copy Hello</button>
+         ${st.replied?`
+           <div class="reply-ready">
+             <div class="label">Reply to send</div>
+             <div class="copy">Hi! Thanks for replying 😊 We’re an interior design studio and I’m checking if there could be a chance to collaborate. Do you ever have clients looking for interior design after buying a property?</div>
+             <div class="actions">
+               <button class="btn primary" data-copyreply>Copy message</button>
+               ${l.wa?'<button class="btn primary" data-wareply>Open WhatsApp</button>':''}
+             </div>
+           </div>
+         `:''}
+       </div>
+
+       <div class="igfield">
+         <input data-igin placeholder="Instagram handle" value="${escapeHtml(ig)}">
+         <button class="btn secondary" data-saveig>Save Instagram</button>
+       </div>
+     </div>`;
+
+   div.querySelector("[data-more]").onclick=()=>{
+      div.querySelector(".lead-more").classList.toggle("open");
+      const open=div.querySelector(".lead-more").classList.contains("open");
+      div.querySelector("[data-more]").textContent=open?"Less ↑":"More · tracking & message ↓";
+   };
+   if(ig) div.querySelector("[data-ig]").onclick=()=>openIG(l.name);
+   if(l.wa) div.querySelector("[data-wa]").onclick=()=>window.open("https://wa.me/"+phone+"?text="+encodeURIComponent("Hello"),"_blank");
+   if(phone){
+      div.querySelector("[data-call]").onclick=()=>window.location.href="tel:+"+phone;
+      div.querySelector("[data-copy]").onclick=()=>{copyText("+"+phone);showToast("Number copied")};
+   }
+   div.querySelectorAll("[data-stage]").forEach(b=>b.onclick=()=>toggleStage(l.name,b.dataset.stage));
+   div.querySelector("[data-greet]").onclick=()=>{copyText("Hello");showToast("Hello copied")};
+   div.querySelector("[data-saveig]").onclick=()=>{setIG(l.name,div.querySelector("[data-igin]").value);showToast("Instagram saved")};
+   if(st.replied){
+      const replyMessage="Hi! Thanks for replying 😊 We’re an interior design studio and I’m checking if there could be a chance to collaborate. Do you ever have clients looking for interior design after buying a property?";
+      div.querySelector("[data-copyreply]").onclick=()=>{copyText(replyMessage);showToast("Reply message copied")};
+      if(l.wa)div.querySelector("[data-wareply]").onclick=()=>window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(replyMessage),"_blank");
+   }
+   r.appendChild(div);
+ });
+}
+function renderMCount(){
+ const contacted=DATA.leads.filter(l=>{const st=leadState(l.name);return st.contacted||st.dm}).length;
+ const el=document.getElementById('mLeadCount'); if(el) el.textContent=contacted;
+}
+function nextLeadAction(){
+ const rows=DATA.leads.map(l=>({lead:l,st:leadState(l.name)}));
+ let x=rows.find(x=>x.st.instagram && !x.st.followed);
+ if(x)return {area:"Instagram",text:`Follow ${x.lead.name} on Instagram`,page:"mLeads"};
+ x=rows.find(x=>x.st.followed && !x.st.engaged);
+ if(x)return {area:"Instagram",text:`Engage with ${x.lead.name}: like or reply to one relevant post/story`,page:"mLeads"};
+ x=rows.find(x=>x.st.engaged && !x.st.dm && !x.st.contacted);
+ if(x)return {area:"Outreach",text:`Send the first message to ${x.lead.name}`,page:"mLeads"};
+ x=rows.find(x=>x.st.replied && !x.st.warm);
+ if(x)return {area:"Reply",text:`Use the reply template with ${x.lead.name}`,page:"mLeads"};
+ x=rows.find(x=>x.st.warm);
+ if(x)return {area:"Follow-up",text:`Move ${x.lead.name} toward a real conversation`,page:"mLeads"};
+ return {area:"Pipeline",text:"Add or verify one Instagram account for an unverified lead",page:"mLeads"};
+}
+function renderMToday(){
+ const root=document.getElementById('mTodayTasks'); if(!root)return;
+ const rows=DATA.leads.map(l=>({lead:l,st:leadState(l.name)}));
+ const contacted=rows.filter(x=>x.st.contacted||x.st.dm).length;
+ const warm=rows.filter(x=>x.st.warm).length;
+ const action=nextLeadAction();
+ const tasks=[
+   {area:"Pipeline",text:`Continue today’s 10-contact batch · ${contacted} total contacts tracked`,page:"mLeads"},
+   action,
+   warm?{area:"Warm leads",text:`Follow up ${warm} warm conversation${warm>1?'s':''}`,page:"mLeads"}:{area:"Visibility",text:"Do one visibility move for the studio",page:"mGrowth"},
+   {area:"Visibility",text:"Choose one simple Growth action and complete it",page:"mGrowth"}
+ ];
+ root.innerHTML=tasks.map(t=>`<div class="task"><span></span><div><div class="tarea">${t.area}</div><div class="tt">${t.text}</div></div><button class="btn ${t.page==='mLeads'?'dark':''}" data-open="${t.page}">Open</button></div>`).join('');
+ root.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>showPage(b.dataset.open,'mtabs'));
+}
+function renderIdeas(){
+ document.getElementById('growthIdeas').innerHTML=DATA.growth_ideas.map((x,i)=>`<div class="idea-card"><b>${x}</b><div class="actions"><button class="btn" onclick="useGrowth(${i})">Use this</button></div></div>`).join('');
+ document.getElementById('productIdeas').innerHTML=DATA.product_ideas.map(x=>`<div class="idea-card"><b>${x}</b></div>`).join('');
+}
+window.useGrowth=function(i){state.growthNotes=((state.growthNotes||'')+(state.growthNotes?'\\n':'')+'• '+DATA.growth_ideas[i]);save();document.getElementById('growthNotes').value=state.growthNotes}
+
+state.money=state.money||[];
+function renderMoney(){
+ const r=document.getElementById('ledger');r.innerHTML='';let net=0;
+ state.money.forEach((m,i)=>{const val=Number(m.amount)||0;net+=m.type==='in'?val:-val;const row=document.createElement('div');row.className='ledger-row';row.innerHTML=`<span>${escapeHtml(m.desc)}</span><span>${m.type==='in'?'Income':'Expense'}</span><span class="${m.type==='in'?'money-pos':'money-neg'}">${m.type==='in'?'+':'-'}$${val.toFixed(2)}</span><button class="btn" data-r="${i}">remove</button>`;r.appendChild(row)});
+ document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{state.money.splice(Number(b.dataset.r),1);save();renderMoney();renderMohamadOverview()});
+ document.getElementById('netMoney').textContent='$'+net.toFixed(2);const pct=Math.max(0,Math.min(100,net/5000*100));document.getElementById('moneyPct').textContent=Math.round(pct)+'%';document.getElementById('moneyBar').style.width=pct+'%';renderMohamadOverview();
+}
+document.getElementById('moneyAdd').onclick=()=>{const desc=document.getElementById('moneyDesc').value.trim(),amount=parseFloat(document.getElementById('moneyAmount').value),type=document.getElementById('moneyType').value;if(!desc||!Number.isFinite(amount)||amount<=0)return;state.money.push({desc,amount,type,date:new Date().toISOString()});save();document.getElementById('moneyDesc').value='';document.getElementById('moneyAmount').value='';renderMoney()}
+
+
+state.routine=state.routine||{med:0,pod:0,move:0};
+window.addRoutine=function(type,max){state.routine[type]=Math.min(max,(state.routine[type]||0)+1);save();renderRoutine()}
+function renderRoutine(){
+ const map={med:'medCount',pod:'podCount',move:'moveCount'};
+ Object.keys(map).forEach(k=>{const el=document.getElementById(map[k]);if(el) el.textContent=state.routine[k]||0});
+}
+
+
+function roadmapCard(g){
+ const st=state.goals[g.id], complete=st.step>=g.steps.length;
+ const rows=g.steps.map((step,i)=>{
+   const cls=i<st.step?'done':i===st.step&&!complete?'current':i===st.step+1&&!complete?'next':'';
+   const label=i<st.step?'done':i===st.step&&!complete?'current':i===st.step+1&&!complete?'next':'later';
+   return `<div class="milestone-row ${cls}"><span class="stepnum">${i+1}</span><span class="steptext">${step}</span><span class="steplabel">${label}</span></div>`;
+ }).join('');
+ return `<div class="roadmap-card"><div class="goal-area">${g.area}</div><h3>${g.name}</h3><div class="why">${g.why}</div><div class="milestone-list">${rows}</div></div>`;
+}
+function renderLifeMap(){
+ const root=document.getElementById('lifeMap'); if(!root)return;
+ const order=['calm','mypage','product','interior'];
+ root.innerHTML=order.map(id=>roadmapCard(DATA.aya_goals.find(g=>g.id===id))).join('')+
+ `<div class="roadmap-card"><div class="goal-area">Create</div><h3>Build your voice</h3><div class="why">Use content to express what you are learning, building and becoming.</div>
+ <div class="milestone-list">
+   <div class="milestone-row current"><span class="stepnum">1</span><span class="steptext">Choose the next useful piece</span><span class="steplabel">current</span></div>
+   <div class="milestone-row next"><span class="stepnum">2</span><span class="steptext">Write the hook / message</span><span class="steplabel">next</span></div>
+   <div class="milestone-row"><span class="stepnum">3</span><span class="steptext">Record or create it</span><span class="steplabel">later</span></div>
+   <div class="milestone-row"><span class="stepnum">4</span><span class="steptext">Publish and learn from response</span><span class="steplabel">later</span></div>
+ </div></div>`;
+}
+
+function renderAll(){renderMCount();renderRoutine();renderMToday();renderAyaToday();renderPools();bindAddTodayButtons()}
+try{renderIdeas()}catch(e){console.error('ideas',e)}
+try{renderLeads()}catch(e){console.error('leads',e)}
+try{renderMoney()}catch(e){console.error('money',e)}
+try{renderAll()}catch(e){console.error('all',e)}
+try{renderMToday()}catch(e){console.error('mToday',e)}
+try{bindAddTodayButtons()}catch(e){console.error('addToday',e)}
+try{bindCleanTasks()}catch(e){console.error('cleanTasks',e)}
+
+// ===== Final usability layer =====
+state.weekFocus = state.weekFocus || ["My Page direction","Interior visibility","App problem validation","Build a lighter routine"];
+state.taskHistory = state.taskHistory || [];
+
+function nowISO(){return new Date().toISOString()}
+function periodStart(period){
+ const d=new Date();
+ if(period==="week"){
+   const day=(d.getDay()+6)%7; d.setDate(d.getDate()-day); d.setHours(0,0,0,0);
+ }else{d.setDate(1);d.setHours(0,0,0,0)}
+ return d;
+}
+function normalizeExistingTasks(){
+ state.ayaTasks=state.ayaTasks||[];
+ state.ayaTasks.forEach(t=>{
+   if(!t.created)t.created=nowISO();
+   if(t.today===undefined)t.today=false;
+   if(t.later===undefined)t.later=false;
+   if(t.done===undefined)t.done=false;
+ });
+}
+normalizeExistingTasks();
+
+
+function showProgressBox(){
+ const b=document.getElementById("progressBox"); if(!b)return;
+ b.style.display=b.style.display==="none"?"block":"none";
+ renderProgress("week");
+}
+document.querySelectorAll("[data-period]").forEach(b=>b.onclick=()=>{
+ document.querySelectorAll("[data-period]").forEach(x=>x.classList.toggle("active",x===b));
+ renderProgress(b.dataset.period);
+});
+function areaName(src){
+ if(src.includes("Page"))return "My Page";
+ if(src.includes("Money")||src.includes("App"))return "Money / App";
+ if(src.includes("Interior")||src.includes("Work"))return "Interior / Work";
+ if(src==="Home")return "Routine / Life";
+ if(src==="Health"||src==="Peace")return "Routine / Life";
+ if(src==="Learning")return "Learning";
+ if(src==="Create")return "Create";
+ return src;
+}
+function renderProgress(period="week"){
+ const root=document.getElementById("progressContent"); if(!root)return;
+ const start=periodStart(period);
+ const hist=state.taskHistory.filter(h=>new Date(h.doneAt)>=start);
+ const areas=["My Page","Money / App","Interior / Work","Routine / Life","Learning","Create"];
+ const counts={};areas.forEach(a=>counts[a]=0);
+ hist.forEach(h=>{const a=areaName(h.source);counts[a]=(counts[a]||0)+1});
+ const total=hist.length;
+ const activeTotal=state.ayaTasks.filter(t=>!t.done).length+total;
+ const pct=activeTotal?Math.round(total/activeTotal*100):0;
+ root.innerHTML=`<div class="progress-summary">
+   <div class="progress-circle" style="--pct:${pct}%"><div style="text-align:center"><b>${total}</b><span>done</span></div></div>
+   <div>${areas.map(a=>{const c=counts[a]||0;const max=Math.max(1,...Object.values(counts));return `<div class="area-progress-row"><span>${a}</span><div class="bar"><div class="barfill" style="width:${Math.round(c/max*100)}%"></div></div><b>${c}</b></div>`}).join("")}</div>
+ </div>
+ <div class="history-block"><h3>What moved</h3>${hist.length?hist.slice().reverse().slice(0,12).map(h=>`<div class="history-item"><span><b>${escapeHtml(h.source)}</b> · ${escapeHtml(h.text)}</span><span>${new Date(h.doneAt).toLocaleDateString()}</span></div>`).join(""):`<div class="muted">Nothing completed in this period yet.</div>`}</div>`;
+}
+function toggleQuickAdd(){document.getElementById("quickPanel")?.classList.toggle("open")}
+function submitQuickAdd(){
+ const text=document.getElementById("quickText").value.trim(); if(!text)return;
+ const source=document.getElementById("quickSource").value, dest=document.getElementById("quickDest").value;
+ state.ayaTasks.push({source,text,done:false,today:dest==="today",later:dest==="later",created:nowISO(),custom:true});
+ document.getElementById("quickText").value=""; save();renderAyaToday();renderPools();renderAttention();toggleQuickAdd();
+}
+function markTaskDone(task){
+ task.done=true;task.today=false;task.later=false;task.doneAt=nowISO();
+ state.taskHistory.push({source:task.source,text:task.text,doneAt:task.doneAt});
+ save();renderAyaToday();renderPools();renderAttention();
+}
+function moveTask(task,dest){
+ task.today=dest==="today";task.later=dest==="later";save();renderAyaToday();renderPools();renderAttention();
+}
+function renderAyaToday(){
+ const root=document.getElementById('todayChosen'); if(!root)return;
+ const items=state.ayaTasks.filter(t=>t.today && !t.done);
+ const empty=document.getElementById('todayEmpty'); if(empty) empty.style.display=items.length?'none':'block';
+ root.innerHTML=items.map((t,i)=>`<div class="task"><input type="checkbox" data-donetask="${i}"><div><div class="tarea">${escapeHtml(t.source)}</div><div class="tt">${escapeHtml(t.text)}</div></div><div class="move-tools"><button class="btn" data-later="${i}">Later</button></div></div>`).join('');
+ root.querySelectorAll('[data-donetask]').forEach((b,i)=>b.onchange=()=>markTaskDone(items[i]));
+ root.querySelectorAll('[data-later]').forEach((b,i)=>b.onclick=()=>moveTask(items[i],"later"));
+
+ const laterRoot=document.getElementById("laterChosen");
+ const later=state.ayaTasks.filter(t=>t.later&&!t.done);
+ if(laterRoot) laterRoot.innerHTML=later.length?later.map((t,i)=>`<div class="task"><span></span><div><div class="tarea">${escapeHtml(t.source)}</div><div class="tt">${escapeHtml(t.text)}</div></div><div class="move-tools"><button class="btn" data-today="${i}">Today</button><button class="btn" data-donelater="${i}">Done</button></div></div>`).join(""):`<div class="muted">Nothing waiting.</div>`;
+ laterRoot?.querySelectorAll("[data-today]").forEach((b,i)=>b.onclick=()=>moveTask(later[i],"today"));
+ laterRoot?.querySelectorAll("[data-donelater]").forEach((b,i)=>b.onclick=()=>markTaskDone(later[i]));
+
+ const hist=document.getElementById("recentHistory");
+ if(hist)hist.innerHTML=state.taskHistory.length?state.taskHistory.slice(-5).reverse().map(h=>`<div class="history-item"><span>${escapeHtml(h.text)}</span><span>${new Date(h.doneAt).toLocaleDateString()}</span></div>`).join(""):`<div class="muted">Your completed work will appear here.</div>`;
+}
+function enhanceSuggestedMoves(){
+ document.querySelectorAll(".clean-task").forEach(row=>{
+   if(row.dataset.enhanced)return;row.dataset.enhanced="1";
+   const source=row.dataset.source,text=row.dataset.text;
+   const span=row.querySelector("span"); const btn=row.querySelector("button");
+   if(span){span.classList.add("move-text");span.title="Double-click to edit";span.ondblclick=()=>{span.contentEditable="true";span.focus()};span.onblur=()=>{if(span.isContentEditable){span.contentEditable="false";row.dataset.text=span.textContent.trim()||text}}}
+   if(btn){btn.textContent="Today";btn.onclick=()=>addToToday(source,row.dataset.text)}
+   const tools=document.createElement("div");tools.className="move-tools";
+   const later=document.createElement("button");later.className="btn";later.textContent="Later";later.onclick=()=>{state.ayaTasks.push({source,text:row.dataset.text,done:false,today:false,later:true,created:nowISO()});save();renderAyaToday();renderAttention()};
+   const done=document.createElement("button");done.className="btn";done.textContent="Done";done.onclick=()=>{const t={source,text:row.dataset.text,done:true,today:false,later:false,created:nowISO(),doneAt:nowISO()};state.ayaTasks.push(t);state.taskHistory.push({source,text:t.text,doneAt:t.doneAt});save();renderAyaToday();renderAttention();row.style.opacity=".45"};
+   tools.append(later,done);
+   row.appendChild(tools);
+ });
+}
+function addToToday(source,text){
+ if(!text)return;
+ const k=taskKey(source,text);
+ const existing=state.ayaTasks.find(t=>taskKey(t.source,t.text)===k && !t.done);
+ if(existing){existing.today=true;existing.later=false}
+ else state.ayaTasks.push({source,text,done:false,today:true,later:false,created:nowISO()});
+ save();renderAyaToday();renderPools();renderAttention();
+}
+
+// recurring routines: session counters, not "done forever"
+state.routineSessions=state.routineSessions||{movement:[],meditation:[]};
+function addRoutineSession(kind){
+ state.routineSessions[kind]=state.routineSessions[kind]||[];
+ state.routineSessions[kind].push(nowISO());save();renderRoutineSessions();
+}
+function renderRoutineSessions(){
+ const start=periodStart("week");
+ document.querySelectorAll(".clean-task").forEach(row=>{
+   const txt=(row.dataset.text||"").toLowerCase();
+   let kind=null,target=0;
+   if(txt.includes("movement")){kind="movement";target=3}
+   if(txt.includes("meditate")){kind="meditation";target=3}
+   if(!kind)return;
+   let c=row.querySelector(".routine-counter");
+   if(!c){c=document.createElement("span");c.className="routine-counter";row.querySelector("span")?.after(c)}
+   const n=(state.routineSessions[kind]||[]).filter(x=>new Date(x)>=start).length;
+   c.innerHTML=`${n}/${target} this week <button title="Add session">+</button>`;
+   c.querySelector("button").onclick=e=>{e.stopPropagation();addRoutineSession(kind)};
+ });
+}
+const originalOpenLifeCard=window.openLifeCard;
+window.openLifeCard=function(id){originalOpenLifeCard(id);setTimeout(()=>{enhanceSuggestedMoves();renderRoutineSessions()},0)}
+
+state.weekFocus=state.weekFocus||["My Page direction","App problem validation","Build a lighter routine","Interior learning"];
+state.userAttention=state.userAttention||[];
+renderWeekFocus();renderAttention();renderAyaToday();enhanceSuggestedMoves();renderRoutineSessions();
+
+function renderMohamadOverview(){
+  const rows=DATA.leads.map(l=>({l,st:leadState(l.name)}));
+  const contacted=rows.filter(x=>x.st.contacted||x.st.dm).length;
+  const warm=rows.filter(x=>x.st.warm).length;
+  const replied=rows.filter(x=>x.st.replied).length;
+  const c=document.getElementById("mOverviewContacted"); if(c)c.textContent=contacted;
+  const w=document.getElementById("mOverviewWarm"); if(w)w.textContent=warm;
+  const opp=document.getElementById("mOverviewOpp");
+  if(opp) opp.textContent=warm?`${warm} warm lead${warm>1?'s':''} ready for follow-up`:replied?`${replied} repl${replied>1?'ies':'y'} to work on`:"No warm opportunity yet";
+
+  let net=0;
+  (state.money||[]).forEach(m=>{const v=Number(m.amount)||0; net+=m.type==='in'?v:-v});
+  const m=document.getElementById("mOverviewMoney"); if(m)m.textContent='$'+net.toFixed(0);
+  const line=document.getElementById("mOverviewMoneyLine"); if(line)line.style.width=Math.max(0,Math.min(100,net/5000*100))+'%';
+}
+
+renderMohamadOverview();
+
+let undoState=null, toastTimer=null;
+function showToast(message, undoFn=null){
+ const t=document.getElementById("toast"); if(!t)return;
+ clearTimeout(toastTimer);
+ t.innerHTML=escapeHtml(message)+(undoFn?` <button class="undo-link" id="undoToast">Undo</button>`:"");
+ t.classList.add("show");
+ if(undoFn){
+   document.getElementById("undoToast").onclick=()=>{undoFn();t.classList.remove("show")};
+ }
+ toastTimer=setTimeout(()=>t.classList.remove("show"),2600);
+}
+const oldAddToToday=addToToday;
+addToToday=function(source,text){
+ oldAddToToday(source,text);
+ showToast("Added to Today",()=>{
+   const t=state.ayaTasks.find(x=>x.source===source&&x.text===text&&!x.done);
+   if(t){t.today=false;save();renderAyaToday();renderPools()}
+ });
+}
+const oldMarkTaskDone=markTaskDone;
+markTaskDone=function(task){
+ const snapshot={...task};
+ oldMarkTaskDone(task);
+ showToast("Marked done",()=>{
+   task.done=snapshot.done;task.today=snapshot.today;task.later=snapshot.later;task.doneAt=snapshot.doneAt;
+   const idx=state.taskHistory.findIndex(h=>h.source===snapshot.source&&h.text===snapshot.text&&h.doneAt===task.doneAt);
+   if(idx>=0)state.taskHistory.splice(idx,1);
+   save();renderAyaToday();renderPools();renderAttention();
+ });
+}
+
+
+state.weekFocus=state.weekFocus||["My Page direction","App problem validation","Build a lighter routine","Interior learning"];
+state.userAttention=state.userAttention||[];
+
+function toggleWeekFocusEditor(){document.getElementById("weekFocusEditor")?.classList.toggle("open")}
+function addWeekFocusInline(){
+ const el=document.getElementById("weekFocusInput"); const v=(el?.value||"").trim(); if(!v)return;
+ if(!state.weekFocus.includes(v))state.weekFocus.push(v);
+ if(state.weekFocus.length>5)state.weekFocus=state.weekFocus.slice(-5);
+ el.value="";save();renderWeekFocus();
+}
+function removeWeekFocus(i){state.weekFocus.splice(i,1);save();renderWeekFocus()}
+function renderWeekFocus(){
+ const root=document.getElementById("weekFocusChips"); if(!root)return;
+ root.innerHTML=state.weekFocus.length
+   ?state.weekFocus.map((x,i)=>`<span class="focus-chip editable">${escapeHtml(x)}<button class="chip-x" onclick="removeWeekFocus(${i})">×</button></span>`).join("")
+   :`<span class="focus-empty">Add 1–5 things you want to move this week.</span>`;
+}
+
+function toggleAttentionEditor(){document.getElementById("attentionEditor")?.classList.toggle("open")}
+function addAttentionInline(){
+ const el=document.getElementById("attentionInput");const v=(el?.value||"").trim();if(!v)return;
+ state.userAttention.push(v);el.value="";save();renderAttention();
+}
+function removeAttention(i){state.userAttention.splice(i,1);save();renderAttention()}
+function renderAttention(){
+ const root=document.getElementById("needsAttention");if(!root)return;
+ const auto=[];
+ const active=state.ayaTasks.filter(t=>!t.done);
+ const later=active.filter(t=>t.later).length;
+ const today=active.filter(t=>t.today).length;
+ if(today>7)auto.push(`Today has ${today} tasks — maybe move some to Later.`);
+ if(later>5)auto.push(`${later} items are waiting in Later.`);
+ const user=state.userAttention.map((x,i)=>`<div class="attention-user"><span>${escapeHtml(x)}</span><button onclick="removeAttention(${i})">×</button></div>`).join("");
+ const automatic=auto.map(x=>`<div class="attention-line">${escapeHtml(x)}</div>`).join("");
+ root.innerHTML=user+automatic || `<div class="focus-empty">Nothing here right now. Add something only when it needs your attention.</div>`;
+}
+
+</script>
+
+<div class="quick-add">
+  <button onclick="toggleQuickAdd()" aria-label="Quick add">＋</button>
+  <div id="quickPanel" class="quick-panel">
+    <div class="micro">QUICK ADD</div>
+    <div style="font-family:Georgia,serif;font-size:20px;margin:4px 0 10px">Capture it before you forget it.</div>
+    <input id="quickText" placeholder="Task or next move">
+    <div class="row" style="margin-top:7px">
+      <select id="quickSource">
+        <option>My Page</option><option>Money / App</option><option>Interior / Work</option>
+        <option>Home</option><option>Health</option><option>Peace</option><option>Learning</option><option>Create</option>
+      </select>
+      <select id="quickDest"><option value="today">Today</option><option value="later">Later</option></select>
+    </div>
+    <div class="actions"><button class="btn dark" onclick="submitQuickAdd()">Add</button></div>
+  </div>
+</div>
+
+
+<button id="sharedPill" class="shared-pill" onclick="openSharedModal()">Shared: connect</button>
+<div id="sharedModal" class="shared-modal">
+  <div class="shared-card">
+    <h3>Shared workspace</h3>
+    <p>Use the same login on both devices. Changes will sync through Supabase instead of staying only in one browser.</p>
+    <div id="sharedSignedOut">
+      <input id="sharedEmail" type="email" autocomplete="email" placeholder="Email">
+      <input id="sharedPassword" type="password" autocomplete="current-password" placeholder="Password">
+      <div class="actions">
+        <button class="btn primary" onclick="sharedSignIn()">Sign in</button>
+        <button class="btn secondary" onclick="sharedSignUp()">Create shared login</button>
+      </div>
+    </div>
+    <div id="sharedSignedIn" style="display:none">
+      <div id="sharedUserLine" class="shared-userline"></div>
+      <div class="actions">
+        <button class="btn secondary" onclick="syncNow()">Sync now</button>
+        <button class="btn secondary" onclick="sharedSignOut()">Sign out</button>
+      </div>
+    </div>
+    <div id="sharedMsg" class="shared-msg"></div>
+    <button class="btn ghost" style="margin-top:12px" onclick="closeSharedModal()">Close</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+</body></html>
