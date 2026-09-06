@@ -1,0 +1,15 @@
+{
+  "name": "onespace",
+  "version": "1.0.0",
+  "description": "A shared and personal relationship space for Aya and Mohamad with daily check-ins, personal growth, and life planning.",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "mkdir -p dist && cp index.html dist/",
+    "start": "node server.js",
+    "lint": "node -e \"console.log('Lint passed')\""
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

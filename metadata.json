@@ -1,0 +1,10 @@
+{
+  "name": "OneSpace",
+  "description": "A shared and personal relationship space for Aya and Mohamad with daily check-ins, personal growth, and life planning.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
