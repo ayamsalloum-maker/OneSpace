@@ -30,9 +30,9 @@ app.get('/blueprint.pdf', (req, res) => {
   res.download(path.join(__dirname, 'OneSpace-Visual-Blueprint-2026.pdf'), 'OneSpace-Visual-Blueprint-2026.pdf');
 });
 
-// Color-review branch only: load the isolated Aya palette override without
-// touching the large application file or any data/behavior code.
-function sendIndexWithAyaColors(res) {
+// Aya review branch only: load isolated visual overrides without touching
+// the large application file or any data/behavior code.
+function sendIndexWithAyaReviewStyles(res) {
   const indexPath = path.join(__dirname, 'index.html');
   fs.readFile(indexPath, 'utf8', (err, html) => {
     if (err) {
@@ -40,17 +40,21 @@ function sendIndexWithAyaColors(res) {
       return;
     }
 
-    const stylesheet = '<link rel="stylesheet" href="/aya-colors.css">';
-    const output = html.includes(stylesheet)
+    const colorStylesheet = '<link rel="stylesheet" href="/aya-colors.css">';
+    const compositionStylesheet = '<link rel="stylesheet" href="/aya-composition.css">';
+    const stylesheets = `${colorStylesheet}\n  ${compositionStylesheet}`;
+
+    const hasBoth = html.includes(colorStylesheet) && html.includes(compositionStylesheet);
+    const output = hasBoth
       ? html
-      : html.replace('</head>', `  ${stylesheet}\n</head>`);
+      : html.replace('</head>', `  ${stylesheets}\n</head>`);
 
     res.type('html').send(output);
   });
 }
 
 app.get(['/', '/index.html'], (req, res) => {
-  sendIndexWithAyaColors(res);
+  sendIndexWithAyaReviewStyles(res);
 });
 
 // Serve static assets from root
@@ -58,7 +62,7 @@ app.use(express.static(__dirname, { index: false }));
 
 // Fallback to index.html for client-side routing
 app.get('*', (req, res) => {
-  sendIndexWithAyaColors(res);
+  sendIndexWithAyaReviewStyles(res);
 });
 
 app.listen(PORT, '0.0.0.0', () => {
