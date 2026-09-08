@@ -1,0 +1,106 @@
+/* OneSpace — Aya color balance override
+   Scope: Aya only. No layout, data, or behavior changes. */
+
+body[data-space="aya"] {
+  --accent: #7C4DFF;
+  --accent2: #FF2F7D;
+  --soft: #FCFCFF;
+  --berry: #FF2F7D;
+  --purple: #5B35D5;
+  --pink-strong: #FF2F7D;
+
+  --aya-ink: #17141F;
+  --aya-ink-soft: #2D273A;
+  --aya-muted: #676270;
+  --aya-faint: #9E98A8;
+  --aya-line: rgba(23, 20, 31, 0.09);
+  --aya-line-strong: rgba(23, 20, 31, 0.18);
+  --aya-surface: #FFFFFF;
+  --aya-pearl: #FCFCFF;
+
+  --aya-pink: #FF2F7D;
+  --aya-violet: #7C4DFF;
+  --aya-purple: #5B35D5;
+  --aya-cyan: #24C7D9;
+  --aya-mint: #43D9A3;
+  --aya-coral: #FF6B61;
+  --aya-amber: #FFB020;
+  --aya-lilac: #E8DFFF;
+
+  --aya-pink-soft: #FFF1F6;
+  --aya-violet-soft: #F4F0FF;
+  --aya-cyan-soft: #EFFBFC;
+  --aya-mint-soft: #EFFBF7;
+  --aya-coral-soft: #FFF2F0;
+  --aya-amber-soft: #FFF8E8;
+
+  --aya-pink-tonal: #FFD3E3;
+  --aya-violet-tonal: #D9CCFF;
+  --aya-cyan-tonal: #BFEAF0;
+  --aya-mint-tonal: #C6F1E1;
+  --aya-coral-tonal: #FFD0CB;
+  --aya-amber-tonal: #FFE2A8;
+
+  background-color: #FCFCFF !important;
+  background-image: none !important;
+}
+
+/* Keep Aya surfaces neutral; color belongs to objects and states, not whole sections. */
+body[data-space="aya"] .aya-canvas,
+body[data-space="aya"] .aya-canvas-content,
+body[data-space="aya"] .aya-page,
+body[data-space="aya"] .aya-content {
+  background-color: transparent;
+}
+
+/* Neutralize legacy warm/beige inherited surfaces inside Aya. */
+body[data-space="aya"] .aya-tasks-stage,
+body[data-space="aya"] .aya-feelings-strip,
+body[data-space="aya"] .aya-subtle-badge,
+body[data-space="aya"] .aya-icon-btn,
+body[data-space="aya"] .aya-partner-pill {
+  border-color: var(--aya-line);
+}
+
+/* Strong color is reserved for meaningful state/action. */
+body[data-space="aya"] :is(button, [role="button"]).on,
+body[data-space="aya"] :is(button, [role="button"])[aria-pressed="true"],
+body[data-space="aya"] :is(button, [role="button"])[aria-selected="true"] {
+  border-color: transparent;
+}
+
+/* Color choreography: preserve distinct tactile moments without section zoning. */
+body[data-space="aya"] .aya-water,
+body[data-space="aya"] .aya-hydration,
+body[data-space="aya"] [data-aya-tone="water"] {
+  --aya-local-accent: #24C7D9;
+  --aya-local-soft: #BFEAF0;
+}
+
+body[data-space="aya"] .aya-mohamad-note,
+body[data-space="aya"] .aya-sticky-note,
+body[data-space="aya"] [data-aya-tone="note"] {
+  --aya-local-accent: #FFB020;
+  --aya-local-soft: #FFE2A8;
+}
+
+body[data-space="aya"] .aya-space-help,
+body[data-space="aya"] [data-aya-tone="space-help"] {
+  --aya-local-accent: #43D9A3;
+  --aya-local-soft: #C6F1E1;
+}
+
+body[data-space="aya"] .aya-movement,
+body[data-space="aya"] [data-aya-tone="movement"] {
+  --aya-local-accent: #7C4DFF;
+  --aya-local-soft: #D9CCFF;
+}
+
+/* Avoid legacy neon/glow language in Aya. */
+body[data-space="aya"] [class*="aya-"] {
+  --aya-shadow-card: 0 10px 26px rgba(23,20,31,.06);
+}
+
+body[data-space="aya"] [class*="aya-"]:not(.aya-sticky-note):not(.aya-mohamad-note) {
+  filter: none;
+}
