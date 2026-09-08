@@ -1,0 +1,215 @@
+/* OneSpace — Aya Today composition + color-presence pass
+   Review branch only. No data/state/logic changes.
+   Goal: stop the white-card-wall without reverting to section color zoning. */
+
+body[data-space="aya"] {
+  /* Keep the canvas bright, but not visually blank. */
+  background-color: #FCFCFF !important;
+  background-image:
+    linear-gradient(180deg, #FCFCFF 0%, #FFFFFF 22%, #FCFCFF 58%, #FFFFFF 100%) !important;
+}
+
+/* =========================================================
+   1. ARRIVAL — make the first viewport visibly OneSpace
+   ========================================================= */
+
+/* Quiet Direction + Affirmation: same composition, different material moments. */
+body[data-space="aya"] .aya-arrival-header > div[style*="grid-template-columns"] > div:first-child {
+  background: linear-gradient(145deg, #F4F0FF 0%, #E8DFFF 100%) !important;
+  border-color: rgba(124,77,255,.18) !important;
+  box-shadow: 0 8px 20px rgba(23,20,31,.055) !important;
+}
+
+body[data-space="aya"] .aya-arrival-header > div[style*="grid-template-columns"] > div:nth-child(2) {
+  background: linear-gradient(145deg, #FFF1F6 0%, #FFD3E3 100%) !important;
+  border-color: rgba(255,47,125,.16) !important;
+  box-shadow: 0 8px 20px rgba(23,20,31,.055) !important;
+}
+
+/* Check-in becomes a soft multitone strip, not another white card. */
+body[data-space="aya"] .aya-feelings-strip {
+  background: linear-gradient(105deg, #FFF1F6 0%, #FCFCFF 46%, #EFFBFC 100%) !important;
+  border-color: rgba(23,20,31,.06) !important;
+  box-shadow: 0 6px 18px rgba(23,20,31,.04) !important;
+}
+
+body[data-space="aya"] .aya-feeling-chip {
+  background: rgba(255,255,255,.72) !important;
+}
+body[data-space="aya"] .aya-feeling-chip:nth-child(1):not(.active),
+body[data-space="aya"] .aya-feeling-chip:nth-child(2):not(.active) {
+  border-color: rgba(255,176,32,.24) !important;
+}
+body[data-space="aya"] .aya-feeling-chip:nth-child(5):not(.active) {
+  border-color: rgba(67,217,163,.28) !important;
+}
+body[data-space="aya"] .aya-feeling-chip:nth-child(6):not(.active),
+body[data-space="aya"] .aya-feeling-chip:nth-child(7):not(.active) {
+  border-color: rgba(255,47,125,.20) !important;
+}
+
+/* =========================================================
+   2. TODAY'S SHAPE — reduce dead white stretch
+   ========================================================= */
+
+body[data-space="aya"] .aya-living-grid {
+  align-items: start !important;
+}
+
+body[data-space="aya"] .aya-tasks-stage {
+  min-height: 0 !important;
+  height: auto !important;
+  background: linear-gradient(155deg, #FCFCFF 0%, #F4F0FF 100%) !important;
+  border-color: rgba(124,77,255,.14) !important;
+}
+
+body[data-space="aya"] .aya-empty-tasks {
+  min-height: 0 !important;
+  padding: 22px 14px !important;
+}
+
+body[data-space="aya"] .aya-task-add-btn {
+  background: #7C4DFF !important;
+  border-color: #7C4DFF !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 5px 14px rgba(23,20,31,.10) !important;
+}
+
+body[data-space="aya"] .aya-task-bank-btn {
+  background: #FFF1F6 !important;
+  border-color: rgba(255,47,125,.22) !important;
+  color: #9F2457 !important;
+  box-shadow: none !important;
+}
+
+/* =========================================================
+   3. HYDRATION + NOTE — strong tactile support objects
+   ========================================================= */
+
+body[data-space="aya"] .aya-water-vessel {
+  background: linear-gradient(150deg, #EFFBFC 0%, #BFEAF0 68%, #FFFFFF 100%) !important;
+}
+
+body[data-space="aya"] .aya-postit-slip {
+  background: linear-gradient(155deg, #FFE2A8 0%, #FFF1B8 100%) !important;
+  border: 1px solid rgba(255,176,32,.18) !important;
+}
+
+/* =========================================================
+   4. FOOD — warm living surface, not a large blank white tray
+   ========================================================= */
+
+body[data-space="aya"] .aya-food-section {
+  min-height: 0 !important;
+  height: auto !important;
+  background: linear-gradient(145deg, #FFF8E8 0%, #FFFFFF 58%, #FFF1F6 100%) !important;
+  border-color: rgba(255,176,32,.14) !important;
+}
+
+body[data-space="aya"] .aya-food-empty-card {
+  max-width: 260px !important;
+  padding: 20px !important;
+  background: #FFE2A8 !important;
+  border-color: rgba(255,176,32,.28) !important;
+  box-shadow: 0 6px 16px rgba(23,20,31,.045) !important;
+}
+
+/* =========================================================
+   5. SPACE HELP — remove another white parent-card feeling
+   ========================================================= */
+
+body[data-space="aya"] .aya-space-help-section {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+body[data-space="aya"] .aya-space-slip {
+  background: linear-gradient(145deg, #C6F1E1 0%, #EFFBF7 100%) !important;
+  border-color: rgba(67,217,163,.30) !important;
+  box-shadow: 0 8px 20px rgba(23,20,31,.055) !important;
+}
+
+/* =========================================================
+   6. DELIGHT — visible tonal objects, not three white cards
+   ========================================================= */
+
+body[data-space="aya"] .aya-discovery-card:nth-child(1) {
+  background: #E8DFFF !important;
+  border-color: rgba(124,77,255,.16) !important;
+}
+body[data-space="aya"] .aya-discovery-card:nth-child(2) {
+  background: #FFE2A8 !important;
+  border-color: rgba(255,176,32,.18) !important;
+}
+body[data-space="aya"] .aya-discovery-card:nth-child(3) {
+  background: #FFD3E3 !important;
+  border-color: rgba(255,47,125,.16) !important;
+}
+
+/* =========================================================
+   7. RESET — color inside the active experience
+   ========================================================= */
+
+body[data-space="aya"] .aya-sanctuary-section {
+  background: linear-gradient(145deg, #FCFCFF 0%, #F4F0FF 54%, #EFFBFC 100%) !important;
+  border-color: rgba(124,77,255,.10) !important;
+}
+
+body[data-space="aya"] .aya-breathing-card {
+  background: #D9CCFF !important;
+  border-color: rgba(91,53,213,.16) !important;
+}
+
+body[data-space="aya"] .aya-reset-bank-card {
+  background: rgba(255,255,255,.72) !important;
+}
+
+body[data-space="aya"] .aya-reset-pill:nth-child(1) { background:#C6F1E1 !important; }
+body[data-space="aya"] .aya-reset-pill:nth-child(2) { background:#BFEAF0 !important; }
+body[data-space="aya"] .aya-reset-pill:nth-child(3) { background:#D9CCFF !important; }
+body[data-space="aya"] .aya-reset-pill:nth-child(4) { background:#FFD0CB !important; }
+body[data-space="aya"] .aya-reset-pill:nth-child(5) { background:#FFE2A8 !important; }
+body[data-space="aya"] .aya-reset-pill:nth-child(6) { background:#FFD3E3 !important; }
+
+body[data-space="aya"] .aya-calm-sounds-box {
+  background: rgba(255,255,255,.68) !important;
+}
+
+/* Later Shelf remains calm but no longer reads as another white card. */
+body[data-space="aya"] .aya-later-card,
+body[data-space="aya"] .aya-later-container .panel {
+  background: #F4F0FF !important;
+  border-color: rgba(124,77,255,.16) !important;
+}
+
+/* =========================================================
+   8. RECEIPT — tactile warm closure
+   ========================================================= */
+
+body[data-space="aya"] .aya-today-receipt {
+  background: linear-gradient(155deg, #FFF8E8 0%, #FFE2A8 100%) !important;
+  border-color: rgba(255,176,32,.18) !important;
+}
+
+/* Reduce heavy card-box repetition where visual grouping is already clear. */
+body[data-space="aya"] .aya-space-help-section,
+body[data-space="aya"] .aya-discovery-section {
+  border-radius: 0 !important;
+}
+
+/* Mobile: preserve color objects without turning them into full-bleed bands. */
+@media (max-width: 680px) {
+  body[data-space="aya"] .aya-tasks-stage,
+  body[data-space="aya"] .aya-food-section,
+  body[data-space="aya"] .aya-sanctuary-section {
+    border-radius: 18px !important;
+  }
+
+  body[data-space="aya"] .aya-arrival-header > div[style*="grid-template-columns"] > div:first-child,
+  body[data-space="aya"] .aya-arrival-header > div[style*="grid-template-columns"] > div:nth-child(2) {
+    min-height: auto !important;
+  }
+}
