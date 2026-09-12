@@ -1,0 +1,297 @@
+/* OneSpace — Aya color balance review
+   Scope: color, border and shadow treatment inside Aya only.
+   No layout, data, state, routes, or behavior changes. */
+
+body[data-space="aya"] {
+  /* Locked OneSpace master palette */
+  --os-canvas: #FFFFFF;
+  --os-pearl: #FCFCFF;
+  --os-ink: #17141F;
+  --os-muted: #676270;
+  --os-line: #EAE8EF;
+  --os-pink: #FF2F7D;
+  --os-violet: #7C4DFF;
+  --os-purple: #5B35D5;
+  --os-cyan: #24C7D9;
+  --os-mint: #43D9A3;
+  --os-coral: #FF6B61;
+  --os-amber: #FFB020;
+  --os-lilac: #E8DFFF;
+
+  /* Aya-facing aliases: same OneSpace palette, not an Aya-exclusive theme */
+  --accent: #7C4DFF;
+  --accent2: #FF2F7D;
+  --soft: #FCFCFF;
+  --berry: #FF2F7D;
+  --purple: #5B35D5;
+  --pink-strong: #FF2F7D;
+
+  --aya-ink: #17141F;
+  --aya-ink-soft: #2D273A;
+  --aya-muted: #676270;
+  --aya-faint: #9E98A8;
+  --aya-line: rgba(23,20,31,.09);
+  --aya-line-strong: rgba(23,20,31,.18);
+  --aya-surface: #FFFFFF;
+  --aya-pearl: #FCFCFF;
+  --aya-sand: #FFFFFF;
+
+  --aya-pink: #FF2F7D;
+  --aya-violet: #7C4DFF;
+  --aya-purple: #5B35D5;
+  --aya-cyan: #24C7D9;
+  --aya-mint: #43D9A3;
+  --aya-coral: #FF6B61;
+  --aya-amber: #FFB020;
+  --aya-lilac: #E8DFFF;
+  --aya-butter: #FFE2A8;
+
+  /* Soft atmospheric tones */
+  --aya-pink-soft: #FFF1F6;
+  --aya-violet-soft: #F4F0FF;
+  --aya-lilac-soft: #F4F0FF;
+  --aya-cyan-soft: #EFFBFC;
+  --aya-mint-soft: #EFFBF7;
+  --aya-coral-soft: #FFF2F0;
+  --aya-amber-soft: #FFF8E8;
+
+  /* Richer tactile tones */
+  --aya-pink-tonal: #FFD3E3;
+  --aya-violet-tonal: #D9CCFF;
+  --aya-cyan-tonal: #BFEAF0;
+  --aya-mint-tonal: #C6F1E1;
+  --aya-coral-tonal: #FFD0CB;
+  --aya-amber-tonal: #FFE2A8;
+
+  /* Neutral depth: no colored glow system */
+  --aya-shadow-card: 0 8px 24px rgba(23,20,31,.055);
+  --aya-shadow-hover: 0 12px 28px rgba(23,20,31,.08);
+
+  background-color: #FCFCFF !important;
+  background-image: none !important;
+}
+
+/* ---------- Global Aya cleanup ---------- */
+body[data-space="aya"] .aya-canvas,
+body[data-space="aya"] .aya-canvas-content,
+body[data-space="aya"] .aya-page,
+body[data-space="aya"] .aya-content {
+  background-color: transparent;
+}
+
+body[data-space="aya"] .aya-tasks-stage,
+body[data-space="aya"] .aya-feelings-strip,
+body[data-space="aya"] .aya-food-section,
+body[data-space="aya"] .aya-space-help-section,
+body[data-space="aya"] .aya-sanctuary-section {
+  border-color: var(--aya-line) !important;
+  box-shadow: var(--aya-shadow-card) !important;
+}
+
+/* Keep major functional anchors neutral instead of giving each one a color zone. */
+body[data-space="aya"] .aya-tasks-stage,
+body[data-space="aya"] .aya-feelings-strip,
+body[data-space="aya"] .aya-food-section,
+body[data-space="aya"] .aya-space-help-section,
+body[data-space="aya"] .aya-sanctuary-section {
+  background: #FFFFFF !important;
+}
+
+/* ---------- Arrival / check-in ---------- */
+body[data-space="aya"] .aya-feeling-chip {
+  background: #FFFFFF !important;
+  border-color: var(--aya-line) !important;
+  color: var(--aya-ink) !important;
+  box-shadow: none !important;
+}
+
+body[data-space="aya"] .aya-feeling-chip:hover {
+  background: var(--aya-violet-soft) !important;
+  border-color: rgba(124,77,255,.24) !important;
+}
+
+body[data-space="aya"] .aya-feeling-chip.active {
+  background: var(--aya-violet) !important;
+  border-color: var(--aya-violet) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 5px 14px rgba(23,20,31,.10) !important;
+}
+
+body[data-space="aya"] .aya-feeling-chip.more {
+  background: var(--aya-pink-soft) !important;
+  border-color: rgba(255,47,125,.20) !important;
+  color: #7B2850 !important;
+}
+
+/* ---------- Today's Shape ---------- */
+body[data-space="aya"] .aya-counter-pill {
+  background: var(--aya-mint-tonal) !important;
+  color: #17634D !important;
+  border-color: rgba(67,217,163,.42) !important;
+  box-shadow: none !important;
+}
+
+/* Task stage stays neutral: color belongs to status, source and action states. */
+body[data-space="aya"] .aya-tasks-stage {
+  background: #FFFFFF !important;
+}
+
+/* ---------- Hydration: cyan lives in the object, not a cyan chapter ---------- */
+body[data-space="aya"] .aya-water-vessel {
+  background: linear-gradient(145deg,#FFFFFF 0%,#EFFBFC 58%,#BFEAF0 100%) !important;
+  border-color: rgba(36,199,217,.28) !important;
+  box-shadow: 0 9px 24px rgba(23,20,31,.06) !important;
+}
+
+body[data-space="aya"] .aya-water-counter,
+body[data-space="aya"] .aya-water-counter strong {
+  color: #108FA0 !important;
+}
+
+body[data-space="aya"] .aya-glass-unit {
+  border-color: rgba(36,199,217,.26) !important;
+  background: rgba(255,255,255,.72) !important;
+}
+
+body[data-space="aya"] .aya-water-fill {
+  background: linear-gradient(180deg,#24C7D9 0%,#18A9BB 100%) !important;
+  box-shadow: none !important;
+}
+
+body[data-space="aya"] .aya-water-btn.plus {
+  background: #24C7D9 !important;
+  border-color: #24C7D9 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 5px 14px rgba(23,20,31,.09) !important;
+}
+
+body[data-space="aya"] .aya-water-btn.minus {
+  background: rgba(255,255,255,.78) !important;
+  border-color: rgba(23,20,31,.10) !important;
+}
+
+/* ---------- Sticky / personal tactile color ---------- */
+body[data-space="aya"] .aya-postit-slip {
+  background: #FFE2A8 !important;
+  color: #2E2618 !important;
+  box-shadow: 0 10px 24px rgba(23,20,31,.11) !important;
+}
+
+/* ---------- Food: keep empty container neutral; warm color arrives through actions/content ---------- */
+body[data-space="aya"] .aya-log-food-btn {
+  background: #FFB020 !important;
+  border-color: #FFB020 !important;
+  color: #3A2908 !important;
+  box-shadow: 0 5px 14px rgba(23,20,31,.08) !important;
+}
+
+body[data-space="aya"] .aya-food-card,
+body[data-space="aya"] .aya-food-item,
+body[data-space="aya"] .aya-food-entry {
+  background: #FFF8E8 !important;
+  border-color: rgba(255,176,32,.28) !important;
+}
+
+/* ---------- Let the Space Help: parent stays neutral; pulled slip carries the mint ---------- */
+body[data-space="aya"] .aya-space-slip {
+  background: #C6F1E1 !important;
+  border-color: rgba(67,217,163,.32) !important;
+  box-shadow: 0 7px 18px rgba(23,20,31,.055) !important;
+}
+
+body[data-space="aya"] .aya-space-slip-badge {
+  color: #17634D !important;
+}
+
+body[data-space="aya"] .aya-space-slip-add {
+  background: #17141F !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(23,20,31,.12) !important;
+}
+
+/* ---------- Moments of Delight: distributed color, no single-color section ---------- */
+body[data-space="aya"] .aya-discovery-card {
+  border-color: var(--aya-line) !important;
+  box-shadow: 0 6px 18px rgba(23,20,31,.045) !important;
+}
+
+body[data-space="aya"] .aya-discovery-card:nth-child(1) {
+  background: #F4F0FF !important;
+}
+body[data-space="aya"] .aya-discovery-card:nth-child(2) {
+  background: #FFF8E8 !important;
+}
+body[data-space="aya"] .aya-discovery-card:nth-child(3) {
+  background: #FFF1F6 !important;
+}
+
+body[data-space="aya"] .aya-discovery-card:nth-child(1) .aya-discovery-link {
+  color: #5B35D5 !important;
+}
+body[data-space="aya"] .aya-discovery-card:nth-child(2) .aya-discovery-link {
+  color: #9A6500 !important;
+}
+body[data-space="aya"] .aya-discovery-card:nth-child(3) .aya-discovery-link {
+  color: #B42362 !important;
+}
+
+/* ---------- Reset: keep sanctuary neutral; put color in the experience ---------- */
+body[data-space="aya"] .aya-breathing-card {
+  background: linear-gradient(145deg,#F4F0FF 0%,#FFFFFF 72%) !important;
+  border-color: rgba(124,77,255,.18) !important;
+  box-shadow: none !important;
+}
+
+body[data-space="aya"] .aya-reset-bank-card {
+  background: #FFFFFF !important;
+  border-color: var(--aya-line) !important;
+  box-shadow: none !important;
+}
+
+body[data-space="aya"] .aya-reset-pill:nth-child(1) { background:#EFFBF7 !important; border-color:rgba(67,217,163,.24) !important; }
+body[data-space="aya"] .aya-reset-pill:nth-child(2) { background:#EFFBFC !important; border-color:rgba(36,199,217,.24) !important; }
+body[data-space="aya"] .aya-reset-pill:nth-child(3) { background:#F4F0FF !important; border-color:rgba(124,77,255,.22) !important; }
+body[data-space="aya"] .aya-reset-pill:nth-child(4) { background:#FFF2F0 !important; border-color:rgba(255,107,97,.22) !important; }
+body[data-space="aya"] .aya-reset-pill:nth-child(5) { background:#FFF8E8 !important; border-color:rgba(255,176,32,.24) !important; }
+body[data-space="aya"] .aya-reset-pill:nth-child(6) { background:#FFF1F6 !important; border-color:rgba(255,47,125,.20) !important; }
+
+body[data-space="aya"] .aya-calm-sounds-box {
+  background: #FCFCFF !important;
+  border-color: var(--aya-line) !important;
+  box-shadow: none !important;
+}
+
+body[data-space="aya"] .aya-calm-pill:nth-child(1) { background:#EFFBFC !important; }
+body[data-space="aya"] .aya-calm-pill:nth-child(2) { background:#FFF8E8 !important; }
+body[data-space="aya"] .aya-calm-pill:nth-child(3) { background:#FFF2F0 !important; }
+body[data-space="aya"] .aya-calm-pill:nth-child(4) { background:#F4F0FF !important; }
+
+/* ---------- Today receipt is a tactile closure object, not a beige KPI panel ---------- */
+body[data-space="aya"] .aya-today-receipt {
+  background: linear-gradient(145deg,#FCFCFF 0%,#FFF8E8 100%) !important;
+  border-color: #EAE8EF !important;
+  box-shadow: 0 8px 22px rgba(23,20,31,.055) !important;
+}
+
+/* ---------- Aya Create color cleanup (no layout change) ---------- */
+body[data-space="aya"] .aya-visual-header h1 {
+  color: #17141F !important;
+}
+body[data-space="aya"] .aya-visual-header p {
+  color: #676270 !important;
+}
+body[data-space="aya"] .aya-note-composer {
+  background: #FCFCFF !important;
+  border-color: rgba(255,47,125,.20) !important;
+  box-shadow: 0 8px 22px rgba(23,20,31,.045) !important;
+}
+
+/* ---------- No neon/glow language in Aya ---------- */
+body[data-space="aya"] [class*="aya-"]:not(.aya-postit-slip):not(.aya-breathing-disc) {
+  filter: none;
+}
+
+/* Preserve clear accessible focus without colored haze. */
+body[data-space="aya"] :is(button,input,textarea,select):focus-visible {
+  outline-color: rgba(124,77,255,.55) !important;
+}
